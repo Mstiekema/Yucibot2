@@ -17,6 +17,15 @@ type Bot struct {
   C net.Conn
 }
 
+type User struct {
+  username string
+  displayName string
+  userId string
+  message string
+  mod string
+  sub string
+}
+
 func CrtBot() *Bot {
   viper.SetConfigFile("./config.toml")
   err := viper.ReadInConfig()
@@ -70,10 +79,17 @@ func (b *Bot) parseMsg(m string) {
   if i >= 1 && i < len(strings.SplitAfter(m, "PRIVMSG")) {
     mWithUser := strings.SplitAfter(m, "PRIVMSG")[1]
     mWithUser = strings.TrimPrefix(mWithUser, " #")
-    msg := strings.SplitAfterN(mWithUser, ":", 2)[1]
-    preUser := strings.SplitAfter(m, ";")[2]
-    user := preUser[13:len(preUser)-1]
-    fmt.Printf("[CHAT] " + user + ": " + msg)
+    msg := strings.TrimSpace(strings.SplitAfterN(mWithUser, ":", 2)[1])
+    user := strings.SplitAfter(m, ";")[2][13:len(strings.SplitAfter(m, ";")[2])-1]
+    fmt.Println("[CHAT] " + user + ": " + msg)
+    
+    User := User{}
+    User.username = strings.ToLower(user)
+    User.displayName = user
+    User.userId = strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "user-id=")[1], ";")[0], ";")
+    User.message = msg
+    User.mod = strings.SplitAfter(m, ";")[5][4:len(strings.SplitAfter(m, ";")[5])-1]
+    User.sub = strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "subscriber=")[1], ";")[0], ";")
     
     // Do something with messages 
     // Do something here with tags or smth idk, sub events etc.
@@ -84,10 +100,10 @@ func (b *Bot) parseMsg(m string) {
     if  i >= 1 && i < len(strings.SplitAfter(msg, " ")) {
       comm = strings.SplitN(msg, " ", 2)[0]
     } else {
-      comm = strings.TrimSpace(msg)
+      comm = msg
     }    
     if strings.HasPrefix(msg, "!") == false {return}
-    b.Modules(comm, user, msg)
+    b.Modules(comm, User)
   }
 }
 

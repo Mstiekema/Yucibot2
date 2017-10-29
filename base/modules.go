@@ -1,28 +1,28 @@
 package base
 
 import (
-  "strings"
+  
 )
 
-func (b *Bot) Modules(C, usr, M string) {
-  b.UserInfoComms(C, usr)
-  b.Basic(C, usr)
-  b.Roulette(C, usr, M)
+func (b *Bot) Modules(C string, U User) {
+  b.UserInfoComms(C, U)
+  b.Basic(C, U)
+  b.Roulette(C, U)
 }
 
-func (b *Bot) UserInfoComms(C, usr string) {
+func (b *Bot) UserInfoComms(C string, U User) {
   if C == "!points" {
-    var res = Query("user", "points", strings.ToLower(usr))
-    if res != "" {b.SendMsg(usr + " currently has " + res + " points")}
+    var res = Query("user", "points", U.username)
+    if res != "" {b.SendMsg(U.displayName + " currently has " + res + " points")}
   } 
   if C == "!lines" {
-    var res = Query("user", "num_lines", strings.ToLower(usr))
-    if res != "" {b.SendMsg(usr + " currently has written " + res + " lines in chat")}
+    var res = Query("user", "num_lines", U.username)
+    if res != "" {b.SendMsg(U.displayName + " currently has written " + res + " lines in chat")}
   }
 }
 
-func (b *Bot) Basic(C, usr string) {
+func (b *Bot) Basic(C string, U User) {
   if C == "!test" {
-    b.SendMsg("This is a test message created by " + usr + " FeelsGoodMan")
-  } 
+    b.SendMsg("This is a test message created by " + U.displayName + " FeelsGoodMan")
+  }
 }

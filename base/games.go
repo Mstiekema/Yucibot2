@@ -7,13 +7,13 @@ import (
   "strconv"
 )
 
-func (b *Bot) Roulette(C, usr, M string) {
+func (b *Bot) Roulette(C string, U User) {
   if C == "!roulette" {
-    msgSplit := strings.SplitAfter(M, " ")
+    msgSplit := strings.SplitAfter(U.message, " ")
     i := 1
-    if  (i >= 1 && i < len(strings.SplitAfter(M, " "))) {
+    if  (i >= 1 && i < len(strings.SplitAfter(U.message, " "))) {
       StringRoulPoints := strings.TrimSpace(msgSplit[1])
-      StringOldPoints := Query("user", "points", strings.ToLower(usr))
+      StringOldPoints := Query("user", "points", U.username)
       roulPoints, _ := strconv.Atoi(StringRoulPoints)
       oldPoints, _ := strconv.Atoi(StringOldPoints)
       if StringOldPoints != "" {
@@ -24,22 +24,22 @@ func (b *Bot) Roulette(C, usr, M string) {
             if ran > 0.5 {
               nPoints := oldPoints + roulPoints
               snPoints := strconv.Itoa(nPoints)
-              Update("user", "points = '"+snPoints+"'", "'"+usr+"'")
-              b.SendMsg(usr + " won the roulette for " + StringRoulPoints + " points and now has " + snPoints + " points! PogChamp")
+              Update("user", "points = '"+snPoints+"'", "'"+U.username+"'")
+              b.SendMsg(U.displayName + " won the roulette for " + StringRoulPoints + " points and now has " + snPoints + " points! PogChamp")
             } else {
               nPoints := oldPoints - roulPoints
               snPoints := strconv.Itoa(nPoints)
-              Update("user", "points = '"+snPoints+"'", "'"+usr+"'")
-              b.SendMsg(usr + " lost the roulette for " + StringRoulPoints + " points and now has " + snPoints + " points! FeelsBadMan")
+              Update("user", "points = '"+snPoints+"'", "'"+U.username+"'")
+              b.SendMsg(U.displayName + " lost the roulette for " + StringRoulPoints + " points and now has " + snPoints + " points! FeelsBadMan")
             }
           } else {
-            b.SendMsg(usr + ", you do not have enough points to do a roulette DansGame")
+            b.SendMsg(U.displayName + ", you do not have enough points to do a roulette DansGame")
           }
         } else {
-          b.SendMsg(usr + ", you can't do negative roulettes")
+          b.SendMsg(U.displayName + ", you can't do negative roulettes")
         }
       } else {
-        b.SendMsg(usr + " is not registered in the database, so is not able to do a roulette.")
+        b.SendMsg(U.displayName + " is not registered in the database, so is not able to do a roulette.")
       }
     } else {
       b.SendMsg("Invalid roulette command")
