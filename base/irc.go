@@ -87,7 +87,7 @@ func (b *Bot) parseMsg(m string) {
       comm = strings.TrimSpace(msg)
     }    
     if strings.HasPrefix(msg, "!") == false {return}
-    b.Modules(comm, user)
+    b.Modules(comm, user, msg)
   }
 }
 

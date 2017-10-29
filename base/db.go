@@ -29,3 +29,20 @@ func Query(tbl, row, where string) (result string) {
   stmtOut.QueryRow(where).Scan(&result) 
   return
 }
+
+func Update(tbl, row, where string) {
+  viper.SetConfigFile("./config.toml")
+  err := viper.ReadInConfig()
+  if err != nil {
+    fmt.Println(err)
+  }
+  username := viper.GetString("mysql.username")
+  password := viper.GetString("mysql.password")
+  table := viper.GetString("mysql.database")
+  
+  db, err := sql.Open("mysql", username+":"+password+"@/"+table)
+  if err != nil {
+		panic(err.Error())
+	}
+  db.Exec("UPDATE "+tbl+" SET "+row+" WHERE name = "+where)
+}
