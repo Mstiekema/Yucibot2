@@ -7,8 +7,7 @@ import (
   "github.com/spf13/viper"
 )
 
-// Using the old database for now. Also only able to pull one thing at the time. Will improve in the future
-func Query(tbl, row, where string) (result string) {
+func Conn() (db *sql.DB) {
   viper.SetConfigFile("./config.toml")
   err := viper.ReadInConfig()
   if err != nil {
@@ -18,31 +17,24 @@ func Query(tbl, row, where string) (result string) {
   password := viper.GetString("mysql.password")
   table := viper.GetString("mysql.database")
   
-  db, err := sql.Open("mysql", username+":"+password+"@/"+table)
+  db, err = sql.Open("mysql", username+":"+password+"@/"+table)
   if err != nil {
 		panic(err.Error())
 	}
+  return
+}
+
+func Query(tbl, row, where string) (result string) {
+  var db = Conn()
   stmtOut, err := db.Prepare("SELECT "+row+" FROM "+tbl+" WHERE name = ?")
   if err != nil {
 		panic(err.Error())
 	}
-  stmtOut.QueryRow(where).Scan(&result) 
+  stmtOut.QueryRow(where).Scan(&result)
   return
 }
 
 func Update(tbl, row, where string) {
-  viper.SetConfigFile("./config.toml")
-  err := viper.ReadInConfig()
-  if err != nil {
-    fmt.Println(err)
-  }
-  username := viper.GetString("mysql.username")
-  password := viper.GetString("mysql.password")
-  table := viper.GetString("mysql.database")
-  
-  db, err := sql.Open("mysql", username+":"+password+"@/"+table)
-  if err != nil {
-		panic(err.Error())
-	}
+  var db = Conn()
   db.Exec("UPDATE "+tbl+" SET "+row+" WHERE name = "+where)
 }
