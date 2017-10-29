@@ -91,8 +91,8 @@ func (b *Bot) parseMsg(m string) {
     User.mod = strings.SplitAfter(m, ";")[5][4:len(strings.SplitAfter(m, ";")[5])-1]
     User.sub = strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "subscriber=")[1], ";")[0], ";")
     
-    // Do something with messages 
-    // Do something here with tags or smth idk, sub events etc.
+    // Events
+    b.UpdateLines(User)
     
     // Commands
     var comm string

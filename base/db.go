@@ -38,3 +38,8 @@ func Update(tbl, row, where string) {
   var db = Conn()
   db.Exec("UPDATE "+tbl+" SET "+row+" WHERE name = "+where)
 }
+
+func Insert(tbl, set string) {
+  var db = Conn()
+  db.Exec("INSERT INTO "+tbl+" VALUES "+set)
+}
