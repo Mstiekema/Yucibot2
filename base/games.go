@@ -46,3 +46,27 @@ func (b *Bot) Roulette(C string, U User) {
     }
   }
 }
+
+func (B *Bot) Slot(C string, U User) {
+  if C == "!slot" {
+    emotes := [3][3]string{{"Kappa", "Keepo", "PogChamp"},{"SeemsGood", "DansGame", "4Head"},{"DatSheffy", "LUL", "cmonBruh"}}
+    a := int(rand.Float64()*3)
+    b := int(rand.Float64()*3)
+    c := int(rand.Float64()*3)
+    set := int(rand.Float64()*3)
+    
+    if a == b && b == c {
+      Update("user", "points = points + 100", "'"+U.username+"'")
+      B.SendMsg(U.displayName+", | "+emotes[set][a]+" | "+emotes[set][b]+" | "+emotes[set][c]+" | -> 3 in a row! You win 100 points PogChamp")
+    } else if a == b || b == c {
+      Update("user", "points = points + 50", "'"+U.username+"'")
+      B.SendMsg(U.displayName+", | "+emotes[set][a]+" | "+emotes[set][b]+" | "+emotes[set][c]+" | -> Pretty close, you win 50 points SeemsGood")
+    } else if a == c {
+      Update("user", "points = points - 50", "'"+U.username+"'")
+      B.SendMsg(U.displayName+", | "+emotes[set][a]+" | "+emotes[set][b]+" | "+emotes[set][c]+" | -> This isn't that good, you lose 50 points FeelsBadMan")
+    } else {
+      Update("user", "points = points - 100", "'"+U.username+"'")
+      B.SendMsg(U.displayName+", | "+emotes[set][a]+" | "+emotes[set][b]+" | "+emotes[set][c]+" | -> Nothing is the same, what are you doing? You lose 100 points LUL")
+    }
+  }
+}
