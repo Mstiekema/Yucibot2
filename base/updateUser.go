@@ -8,7 +8,9 @@ func (b *Bot) UpdateLines(U User) {
   StringOldPoints := Query("user", "points", U.username)
   if StringOldPoints != "" {
     Update("user", "num_lines = num_lines + 1", "'"+U.username+"'")
+    Insert("chatlogs (userId, log)", "('"+U.userId+"', '" +U.message+"')")
   } else {
-    Insert("user (name, userId, points, num_lines, level, isMod)", "('"+ U.username + "', '" + U.userId + "', '0', '1', '100', '"+ U.mod + "')")
+    Insert("user (name, userId, points, num_lines, level, isMod)", "('"+U.username+"', '"+U.userId+"', '0', '1', '100', '"+U.mod+"')")
+    Insert("chatlogs (userId, log)", "('"+U.userId+"', '" +U.message+"')")
   }
 }
