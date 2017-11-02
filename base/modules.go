@@ -9,6 +9,7 @@ func (b *Bot) Modules(C string, U User) {
   b.Basic(C, U)
   b.Roulette(C, U)
   b.Slot(C, U)
+  b.Pickpocket(C, U)
 }
 
 func (b *Bot) UserInfoComms(C string, U User) {
