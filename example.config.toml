@@ -6,13 +6,12 @@ admin = "mstiekema"
 clientId = "clientId"
 clientSecret = "clientSecret"
 
-# Don't need these just yet
-# [apiKeys]
-# ytApiKey = "somekey"
-# twitter_consumer_key = "somekey"
-# twitter_consumer_secret = "somekey"
-# twitter_access_token_key = "somekey"
-# twitter_access_token_secret = "somekey"
+[apiKeys]
+ytApiKey = "somekey"
+twitter_consumer_key = "somekey"
+twitter_consumer_secret = "somekey"
+twitter_access_token_key = "somekey"
+twitter_access_token_secret = "somekey"
 
 [mysql]
 username = "root"

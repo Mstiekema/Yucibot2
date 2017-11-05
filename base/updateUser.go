@@ -8,7 +8,7 @@ import (
   "time"
 )
 
-type Foo struct {
+type AllUsers struct {
   Count int `json:"chatter_count"`
   Chatters struct {
     Mods []string `json:"moderators"`
@@ -22,7 +22,7 @@ func (b *Bot) UpdatePoints() {
   defer resp.Body.Close()
   
   body, _ := ioutil.ReadAll(resp.Body)
-  app := Foo{}
+  app := AllUsers{}
   err := json.Unmarshal(body, &app)
   if err != nil {
     fmt.Println(err)

@@ -12,6 +12,7 @@ var channel string
 
 type Bot struct {
   oauth string
+  ytApiKey string
   Channel string
   nick string
   C net.Conn
@@ -37,6 +38,7 @@ func CrtBot() *Bot {
     oauth: viper.GetString("twitch.oauth"),
     Channel: viper.GetString("twitch.channel"),
     nick: viper.GetString("twitch.botname"),
+    ytApiKey: viper.GetString("apiKeys.ytApiKey"),
   }
 }
 

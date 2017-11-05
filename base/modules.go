@@ -10,6 +10,7 @@ func (b *Bot) Modules(C string, U User) {
   b.Roulette(C, U)
   b.Slot(C, U)
   b.Pickpocket(C, U)
+  b.Songrequest(C, U)
 }
 
 func (b *Bot) UserInfoComms(C string, U User) {
