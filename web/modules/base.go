@@ -8,13 +8,22 @@ import (
 )
 
 func Home(w http.ResponseWriter, r *http.Request){
-  // Testing some stuff, some other stuff will be here soon
-  channel := "Mstiekema"
+  if r.URL.Path != "/" {
+    t, err := template.New("").ParseFiles("./web/templates/error.html", "./web/templates/header.html")
+    if err != nil {
+      log.Print("template parsing error: ", err)
+    }
+    err = t.ExecuteTemplate(w, "base", nil)
+    if err != nil {
+      log.Print("template executing error: ", err)
+    }
+    return
+  }  
   t, err := template.New("").ParseFiles("./web/templates/home.html", "./web/templates/header.html")
   if err != nil {
     log.Print("template parsing error: ", err)
   }
-  err = t.ExecuteTemplate(w, "base", channel)
+  err = t.ExecuteTemplate(w, "base", nil)
   if err != nil {
     log.Print("template executing error: ", err)
   }
