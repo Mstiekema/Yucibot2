@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css" integrity="sha384-UQiGfs9ICog+LwheBSRCt1o5cbyKIHbwjWscjemyBMT9YCUMZffs6UqUTd0hObXD" crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" href="../static/yucibot.css" id="css">
+<title>Yucibot</title>
+</head>
+<body>
+<div class="main">
+<h2>Songlist | {{.Date}}</h2>
+  <p>
+    <a href="#playing">
+    Current song: {{$.CurrSongT}}</a><br>
+    Requested by: {{$.CurrSongN}}
+    <a href="https://www.youtube.com/watch?v={{$.CurrSongId}}" target="_blank" id="ytlink">YouTube link</a>
+  </p>
+  {{ range $key, $value := .Name }}
+    {{ $ps := index $.PlayState $key }}
+    {{ $np := index $.Title $key }}
+    {{ if eq $np $.CurrSongT }}
+      <div class="songlistDiv playing" id="playing">
+        <img src="{{index $.Thumb $key }}"><p>{{index $.Title $key }}<br> Requested by: {{index $.Name $key }}
+        <br><a href="https://www.youtube.com/watch?v={{index $.Songid $key }}" target="_blank" id="ytlink">YouTube link</a><br>
+        ID: {{index $.Songid $key }}</p>
+      </div>
+    {{ else if eq $ps "0" }}
+      <div class="songlistDiv">
+        <img src="{{index $.Thumb $key }}"><p>{{index $.Title $key }}<br> Requested by: {{index $.Name $key }}
+        <br><a href="https://www.youtube.com/watch?v={{index $.Songid $key }}" target="_blank" id="ytlink">YouTube link</a><br>
+        ID: {{index $.Songid $key }}</p>
+      </div>
+    {{ else }}
+      <div class="songlistDiv played">
+        <img src="{{index $.Thumb $key }}"><p>{{index $.Title $key }}<br> Requested by: {{index $.Name $key }}
+        <br><a href="https://www.youtube.com/watch?v={{index $.Songid $key }}" target="_blank" id="ytlink">YouTube link</a><br>
+        ID: {{index $.Songid $key }}</p>
+      </div>
+    {{ end }}
+  {{ end }}
+</div>
+</body>

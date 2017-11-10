@@ -1,3 +1,25 @@
 .main {
   margin: 20px;
 }
+
+.songlistDiv {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 91px;
+  border: 1px solid black
+}
+
+.songlistDiv p {
+  position: absolute;
+  top: 5px;
+  left: 130px;
+}
+
+.playing {
+  background-color: rgba(52, 177, 95, 0.64);
+}
+
+.played {
+  background-color: rgba(177, 52, 52, 0.64);
+}
