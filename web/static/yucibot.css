@@ -23,3 +23,20 @@
 .played {
   background-color: rgba(177, 52, 52, 0.64);
 }
+
+.active {
+  background-color: lightgray;
+}
+
+#searchBar {
+  position: absolute;
+  top: 0px;
+  right: 70px;
+  width: 200px;
+}
+
+#loginBtn {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}

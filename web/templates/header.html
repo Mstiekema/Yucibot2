@@ -1,0 +1,45 @@
+{{define "base"}}
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0-rc.2/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap2/bootstrap-switch.css">
+<link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css" integrity="sha384-UQiGfs9ICog+LwheBSRCt1o5cbyKIHbwjWscjemyBMT9YCUMZffs6UqUTd0hObXD" crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" href="../static/yucibot.css" id="css">
+<script src="../static/basic.js"></script>
+<script>
+$(document).ready(function () {
+	var loc = $('.pure-menu-item').find('a').attr('href');
+	var url = location.href.split('/')
+	var urlEnd = "/" + url[3]
+	var div = $('a[href^="'+urlEnd+'"]')[0];
+  $(".pure-menu-item a").removeClass("active");
+    $(div).addClass('active');
+});
+</script>
+<title>Yucibot</title>
+</head>
+<body>
+<div class="pure-menu pure-menu-horizontal menu">
+  <ul class="pure-menu-list">
+    <li class="pure-menu-item"><a class="pure-menu-link" href="/">Home</a></li>
+    <li class="pure-menu-item"><a class="pure-menu-link" href="/commands">Commands</a></li>
+    <li class="pure-menu-item"><a class="pure-menu-link" href="/stats">Stats</a></li>
+		<li class="pure-menu-item"><a class="pure-menu-link" href="/quotes">Quotes</a></li>
+    <li class="pure-menu-item"><a class="pure-menu-link" href="/songlist">Songlist</a></li>
+  </ul>
+  <div id="right">
+    <a class="btn btn-default" id="loginBtn" href="/login">Login</a>
+	  <input id="searchBar" type="text" class="form-control" placeholder="Username">
+   </div>
+</div>
+ {{template "content" .}}
+</body>
+</html>
+{{end}}

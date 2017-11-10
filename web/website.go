@@ -34,11 +34,11 @@ func MainWeb() {
 func home(w http.ResponseWriter, r *http.Request){
   // Testing some stuff, some other stuff will be here soon
   channel := "Mstiekema"
-  t, err := template.ParseFiles("./web/templates/home.html")
+  t, err := template.New("").ParseFiles("./web/templates/home.html", "./web/templates/header.html")
   if err != nil {
     log.Print("template parsing error: ", err)
   }
-  err = t.Execute(w, channel)
+  err = t.ExecuteTemplate(w, "base", channel)
   if err != nil {
     log.Print("template executing error: ", err)
   }
@@ -50,11 +50,11 @@ func userPage(w http.ResponseWriter, r *http.Request) {
   lines := base.Query("user", "num_lines", usr)
   u := &User{Username: usr, Points: points, Lines: lines}
   
-  t, err := template.ParseFiles("./web/templates/user.html")
+  t, err := template.New("").ParseFiles("./web/templates/user.html", "./web/templates/header.html")
   if err != nil {
     log.Print("template parsing error: ", err)
   }
-  err = t.Execute(w, u)
+  err = t.ExecuteTemplate(w, "base", u)
   if err != nil {
     log.Print("template executing error: ", err)
   }
@@ -127,11 +127,11 @@ func songlist(w http.ResponseWriter, r *http.Request) {
     "PlayState": playStates,
   }
   
-  t, err := template.ParseFiles("./web/templates/songlist.html")
+  t, err := template.New("").ParseFiles("./web/templates/songlist.html", "./web/templates/header.html")
   if err != nil {
     log.Print("template parsing error: ", err)
   }
-  err = t.Execute(w, Songs)
+  err = t.ExecuteTemplate(w, "base", Songs)
   if err != nil {
     log.Print("template executing error: ", err)
   }
