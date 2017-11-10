@@ -88,38 +88,42 @@ func (b *Bot) getLinkInfo(L, C string, U User) {
   }
 
   tReg := regexp.MustCompile(`PT?(?P<hours>\d+H)?(?P<minutes>\d+M)?(?P<seconds>\d+S)?`)
-  matches := tReg.FindStringSubmatch(vid.Items[0].ContentDetails.Time)
-  h, _ := strconv.Atoi(strings.TrimSuffix(matches[1], "H"))
-  m, _ := strconv.Atoi(strings.TrimSuffix(matches[2], "M"))
-  s, _ := strconv.Atoi(strings.TrimSuffix(matches[3], "S"))
-  itime := (h*3600)+(m*60)+s
-  time := strconv.Itoa(itime)
-  
-  var db = Conn()
-  res, err := db.Query("select name, songid from songrequest where DATE(time) = CURDATE() AND playState = 0")
-  if err != nil {
-		panic(err.Error())
-	}
-  defer res.Close()
-  
-  var names []string
-  var songids []string
-  
-  for res.Next() {
-    var name string
-    var songid string
-    err = res.Scan(&name, &songid)
-    names = append(names, name)
-    songids = append(songids, songid)
-  }
-  
-  if checkInSlice(L, songids) > 0 {
-    b.SendMsg(U.displayName+", this song is already in the queue.")
-  } else if checkInSlice(U.displayName, names) > 2 {
-    b.SendMsg(U.displayName+", you already have 3 songs in the queue, please wait ")
+  if len(vid.Items) > 0 {
+    matches := tReg.FindStringSubmatch(vid.Items[0].ContentDetails.Time)
+    h, _ := strconv.Atoi(strings.TrimSuffix(matches[1], "H"))
+    m, _ := strconv.Atoi(strings.TrimSuffix(matches[2], "M"))
+    s, _ := strconv.Atoi(strings.TrimSuffix(matches[3], "S"))
+    itime := (h*3600)+(m*60)+s
+    time := strconv.Itoa(itime)
+    
+    var db = Conn()
+    res, err := db.Query("select name, songid from songrequest where DATE(time) = CURDATE() AND playState = 0")
+    if err != nil {
+  		panic(err.Error())
+  	}
+    defer res.Close()
+    
+    var names []string
+    var songids []string
+    
+    for res.Next() {
+      var name string
+      var songid string
+      err = res.Scan(&name, &songid)
+      names = append(names, name)
+      songids = append(songids, songid)
+    }
+    
+    if checkInSlice(L, songids) > 0 {
+      b.SendMsg(U.displayName+", this song is already in the queue.")
+    } else if checkInSlice(U.displayName, names) > 2 {
+      b.SendMsg(U.displayName+", you already have 3 songs in the queue, please wait ")
+    } else {
+      Insert("songrequest (title, thumb, name, length, songid)", "('"+vid.Items[0].Snippet.Title+"', '" +vid.Items[0].Snippet.Thumbnails.Default.Url+"', '"+U.displayName+"', '"+time+"', '"+L+"')")
+      b.SendMsg("Added "+vid.Items[0].Snippet.Title+" to the queue. Song requested by "+U.displayName)
+    }  
   } else {
-    Insert("songrequest (title, thumb, name, length, songid)", "('"+vid.Items[0].Snippet.Title+"', '" +vid.Items[0].Snippet.Thumbnails.Default.Url+"', '"+U.displayName+"', '"+time+"', '"+L+"')")
-    b.SendMsg("Added "+vid.Items[0].Snippet.Title+" to the queue. Song requested by "+U.displayName)
+    b.SendMsg(U.displayName+", couldn't find a song with this name :/")
   }
 }
 
