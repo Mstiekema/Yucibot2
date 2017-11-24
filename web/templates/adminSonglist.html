@@ -1,0 +1,32 @@
+{{define "content"}}
+<div class="main" ng-app="yucibot" ng-controller="songQueue">
+	<h2>Songlist <small>Queue length: *- length -*</small></h2>
+	<div class="songController" ng-show="Ids">
+		<button type="button" class="btn btn-warning" onclick="previousVideo()">Previous video</button> <button type="button" class="btn btn-danger" onclick="skipVideo()">Skip video</button><br>
+		<div id="videoTitle">
+			<b>Current song</b>:<br>
+			<b>Requested by</b>: 
+		</div>
+	</div>
+	<div id="player"></div>
+	<div class="songQueue" ng-show="Ids">
+	<div class="panel panel-default">
+	  <div class="panel-heading"><h3>Queue</h3></div>
+		<div class="panel-body"><ul class="list-group">
+			<div ng-repeat="x in Titles" ng-if="$index > 0">
+				<li class="list-group-item">
+					<img id="songItemThumb" ng-src=*-Thumbs[$index]-*>
+					<div id="songItemInfo"> [*- $index -*] *- x -* <br> Requested by: <b>*- Names[$index] -*</b> <br>
+					<button type="button" class="btn btn-default" ng-click="deleteVideo(Ids[$index])" id="skip">Delete</button></div>
+				</li>
+			</div>
+		</div></ul>
+	</div>
+	</div>
+	<div ng-hide="Ids">
+		<h4>There are currently no songs in the queue, please try again later :)</h4>
+	</div>
+</div>
+
+<script type="text/javascript" src="/../static/songlist.js"></script>
+{{end}}

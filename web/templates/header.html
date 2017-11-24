@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0-rc.2/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -11,8 +11,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap2/bootstrap-switch.css">
 <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css" integrity="sha384-UQiGfs9ICog+LwheBSRCt1o5cbyKIHbwjWscjemyBMT9YCUMZffs6UqUTd0hObXD" crossorigin="anonymous">
-<link rel="stylesheet" type="text/css" href="../static/yucibot.css" id="css">
-<script src="../static/basic.js"></script>
+<link rel="stylesheet" type="text/css" href="/../static/yucibot.css" id="css">
+<script src="/../static/basic.js"></script>
 <script>
 $(document).ready(function () {
 	var loc = $('.pure-menu-item').find('a').attr('href');
@@ -33,6 +33,11 @@ $(document).ready(function () {
     <li class="pure-menu-item"><a class="pure-menu-link" href="/stats">Stats</a></li>
 		<li class="pure-menu-item"><a class="pure-menu-link" href="/quotes">Quotes</a></li>
     <li class="pure-menu-item"><a class="pure-menu-link" href="/songlist">Songlist</a></li>
+		<li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover"><a class="pure-menu-link" href="/admin">Admin</a>
+			<ul class="pure-menu-children">
+				<li class="pure-menu-item"><a class="pure-menu-link" href="/admin/songlist">Songlist</a></li>
+			</ul>        
+		</li>
   </ul>
   <div id="right">
     <a class="btn btn-default" id="loginBtn" href="/login">Login</a>

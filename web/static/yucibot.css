@@ -1,7 +1,22 @@
+/* General CSS */
 .main {
   margin: 20px;
 }
 
+#searchBar {
+  position: absolute;
+  top: 0px;
+  right: 70px;
+  width: 200px;
+}
+
+#loginBtn {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
+
+/* Songlist CSS */
 .songlistDiv {
   position: relative;
   display: block;
@@ -16,6 +31,11 @@
   left: 130px;
 }
 
+.songController {
+  float: left;
+  width: 400px;
+}
+
 .playing {
   background-color: rgba(52, 177, 95, 0.64);
 }
@@ -28,15 +48,16 @@
   background-color: lightgray;
 }
 
-#searchBar {
-  position: absolute;
-  top: 0px;
-  right: 70px;
-  width: 200px;
+#songItemInfo {
+  position: relative;
+  width: 260px;
+  display: block;
+  overflow: hidden;
+  top: -80px;
+  margin-bottom: -80px;
+  left: 130px;
 }
 
-#loginBtn {
-  position: absolute;
-  top: 0px;
-  right: 0px;
+#songItemThumb {
+  margin-top: -10px;
 }

@@ -14,6 +14,10 @@ func MainWeb() {
   http.HandleFunc("/user/", webmods.UserPage)
   http.HandleFunc("/songlist/", webmods.Songlist)
   
+  http.HandleFunc("/admin/songlist/", webmods.AdminSonglist)
+  
+  http.HandleFunc("/post/getSongs/", webmods.SendSongs)
+  
   err := http.ListenAndServe(":9090", nil)
   if err != nil {
       log.Fatal("ListenAndServe: ", err)
