@@ -24,13 +24,13 @@ func Conn() (db *sql.DB) {
   return
 }
 
-func Query(tbl, row, where string) (result string) {
+func Query(qry string) (result string) {
   var db = Conn()
-  stmtOut, err := db.Prepare("SELECT "+row+" FROM "+tbl+" WHERE name = ?")
+  stmtOut, err := db.Prepare(qry)
   if err != nil {
 		panic(err.Error())
 	}
-  stmtOut.QueryRow(where).Scan(&result)
+  stmtOut.QueryRow().Scan(&result)
   return
 }
 

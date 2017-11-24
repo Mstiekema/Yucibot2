@@ -113,3 +113,8 @@ func (b *Bot) SendMsg(msg string) {
   fmt.Fprintf(b.C, "PRIVMSG #%s :"+msg+"\r\n", b.Channel,)
   fmt.Println("[SEND] " + msg)
 }
+
+func (b *Bot) SendWhisper(msg, user string) {
+  fmt.Fprintf(b.C, "PRIVMSG #%s : .w "+user+" "+msg+"\r\n", b.Channel,)
+  fmt.Println("[WHISPER] "+user+": "+msg)
+}

@@ -16,8 +16,8 @@ type User struct {
 
 func UserPage(w http.ResponseWriter, r *http.Request) {
   usr := strings.Replace(strings.SplitAfter(r.URL.Path, "/")[2], "/", "", 2)
-  points := base.Query("user", "points", usr)
-  lines := base.Query("user", "num_lines", usr)
+  points := base.Query("SELECT points FROM user WHERE name = '"+usr+"'")
+  lines := base.Query("SELECT num_lines FROM user WHERE name = '"+U.username+"'")
   u := &User{Username: usr, Points: points, Lines: lines}
   
   t, err := template.New("").ParseFiles("./web/templates/user.html", "./web/templates/header.html")

@@ -39,7 +39,7 @@ func (b *Bot) UpdatePoints() {
 }
 
 func (b *Bot) UpdateLines(U User) {
-  StringOldPoints := Query("user", "points", U.username)
+  StringOldPoints := Query("SELECT points FROM user WHERE name = '"+U.username+"'")
   if StringOldPoints != "" {
     Update("user", "num_lines = num_lines + 1", "name", "'"+U.username+"'")
     Insert("chatlogs (userId, log)", "('"+U.userId+"', '" +U.message+"')")

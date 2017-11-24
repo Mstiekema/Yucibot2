@@ -13,7 +13,7 @@ func (b *Bot) Roulette(C string, U User) {
     i := 1
     if  (i >= 1 && i < len(strings.SplitAfter(U.message, " "))) {
       StringRoulPoints := strings.TrimSpace(msgSplit[1])
-      StringOldPoints := Query("user", "points", U.username)
+      StringOldPoints := Query("SELECT points FROM user WHERE name = '"+U.username+"'")
       roulPoints, _ := strconv.Atoi(StringRoulPoints)
       oldPoints, _ := strconv.Atoi(StringOldPoints)
       if StringOldPoints != "" {
@@ -74,17 +74,17 @@ func (B *Bot) Slot(C string, U User) {
 func (b *Bot) Pickpocket(C string, U User) {
   if C == "!stoppp" {
     Update("user", "pickP = 0", "name", "'"+U.username+"'")
-    b.SendMsg("You can no longer steal points from " + U.username)
+    b.SendMsg("You can no longer steal points from " + U.displayName)
   } else if C == "!resumepp" {
     Update("user", "pickP = 1", "name", "'"+U.username+"'")
-    b.SendMsg("You can now start stealing points from " + U.username)
+    b.SendMsg("You can now start stealing points from " + U.displayName)
   } else if C == "!pickpocket" || C == "!pp" {
     msgSplit := strings.SplitAfter(U.message, " ")
     i := 1
     if  (i >= 1 && i < len(strings.SplitAfter(U.message, " "))) {
       target := strings.ToLower(msgSplit[1])
-      uPoints := Query("user", "points", U.username)
-      tPoints := Query("user", "points", target)
+      uPoints := Query("SELECT points FROM user WHERE name = '"+U.username+"'")
+      tPoints := Query("SELECT points FROM user WHERE name = '"+target+"'")
       fuPoints, _ := strconv.ParseFloat(uPoints, 64)
       itPoints, _ := strconv.Atoi(tPoints)
       if uPoints != "" && tPoints != "" {
@@ -128,7 +128,7 @@ func (b *Bot) Pickpocket(C string, U User) {
           }
         }
       } else {
-        b.SendMsg(U.username + ", something went wrong while performing the pickpocket command")
+        b.SendMsg(U.displayName + ", something went wrong while performing the pickpocket command")
       }
     } else {
       b.SendMsg("Invalid pickpocket command")
