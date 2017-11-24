@@ -24,12 +24,12 @@ func (b *Bot) Roulette(C string, U User) {
             if ran > 0.5 {
               nPoints := oldPoints + roulPoints
               snPoints := strconv.Itoa(nPoints)
-              Update("user", "points = '"+snPoints+"'", "'"+U.username+"'")
+              Update("user", "points = '"+snPoints+"'", "name", "'"+U.username+"'")
               b.SendMsg(U.displayName + " won the roulette for " + StringRoulPoints + " points and now has " + snPoints + " points! PogChamp")
             } else {
               nPoints := oldPoints - roulPoints
               snPoints := strconv.Itoa(nPoints)
-              Update("user", "points = '"+snPoints+"'", "'"+U.username+"'")
+              Update("user", "points = '"+snPoints+"'", "name", "'"+U.username+"'")
               b.SendMsg(U.displayName + " lost the roulette for " + StringRoulPoints + " points and now has " + snPoints + " points! FeelsBadMan")
             }
           } else {
@@ -56,16 +56,16 @@ func (B *Bot) Slot(C string, U User) {
     set := int(rand.Float64()*3)
     
     if a == b && b == c {
-      Update("user", "points = points + 100", "'"+U.username+"'")
+      Update("user", "points = points + 100", "name", "'"+U.username+"'")
       B.SendMsg(U.displayName+", | "+emotes[set][a]+" | "+emotes[set][b]+" | "+emotes[set][c]+" | -> 3 in a row! You win 100 points PogChamp")
     } else if a == b || b == c {
-      Update("user", "points = points + 50", "'"+U.username+"'")
+      Update("user", "points = points + 50", "name", "'"+U.username+"'")
       B.SendMsg(U.displayName+", | "+emotes[set][a]+" | "+emotes[set][b]+" | "+emotes[set][c]+" | -> Pretty close, you win 50 points SeemsGood")
     } else if a == c {
-      Update("user", "points = points - 50", "'"+U.username+"'")
+      Update("user", "points = points - 50", "name", "'"+U.username+"'")
       B.SendMsg(U.displayName+", | "+emotes[set][a]+" | "+emotes[set][b]+" | "+emotes[set][c]+" | -> This isn't that good, you lose 50 points FeelsBadMan")
     } else {
-      Update("user", "points = points - 100", "'"+U.username+"'")
+      Update("user", "points = points - 100", "name", "'"+U.username+"'")
       B.SendMsg(U.displayName+", | "+emotes[set][a]+" | "+emotes[set][b]+" | "+emotes[set][c]+" | -> Nothing is the same, what are you doing? You lose 100 points LUL")
     }
   }
@@ -73,10 +73,10 @@ func (B *Bot) Slot(C string, U User) {
 
 func (b *Bot) Pickpocket(C string, U User) {
   if C == "!stoppp" {
-    Update("user", "pickP = 0", "'"+U.username+"'")
+    Update("user", "pickP = 0", "name", "'"+U.username+"'")
     b.SendMsg("You can no longer steal points from " + U.username)
   } else if C == "!resumepp" {
-    Update("user", "pickP = 1", "'"+U.username+"'")
+    Update("user", "pickP = 1", "name", "'"+U.username+"'")
     b.SendMsg("You can now start stealing points from " + U.username)
   } else if C == "!pickpocket" || C == "!pp" {
     msgSplit := strings.SplitAfter(U.message, " ")
@@ -93,17 +93,17 @@ func (b *Bot) Pickpocket(C string, U User) {
         if U.sub == "1" {
           if x > 20 {
             if stealP > itPoints {
-              Update("user", "points = points + "+tPoints, "'"+U.username+"'")
-              Update("user", "points = points - "+tPoints, "'"+target+"'")
+              Update("user", "points = points + "+tPoints, "name", "'"+U.username+"'")
+              Update("user", "points = points - "+tPoints, "name", "'"+target+"'")
               b.SendMsg(U.displayName + " stole all of "+msgSplit[1]+"'s "+tPoints+" points TriHard")
             } else {
-              Update("user", "points = points + "+strconv.Itoa(stealP), "'"+U.username+"'")
-              Update("user", "points = points - "+strconv.Itoa(stealP), "'"+target+"'")
+              Update("user", "points = points + "+strconv.Itoa(stealP), "name", "'"+U.username+"'")
+              Update("user", "points = points - "+strconv.Itoa(stealP), "name", "'"+target+"'")
               b.SendMsg(U.displayName + " stole "+strconv.Itoa(stealP)+" points from "+msgSplit[1]+" TriHard")
             }
           } else if x < 5 {
             lPoints := strconv.Itoa(int(fuPoints * 0.1))
-            Update("user", "points = points - "+lPoints, "'"+U.username+"'")
+            Update("user", "points = points - "+lPoints, "name", "'"+U.username+"'")
             b.SendMsg(U.displayName + " got caught trying to steal points from "+msgSplit[1]+" and loses "+lPoints+" points")
           } else {
             b.SendMsg(U.displayName + " failed to steal points from "+msgSplit[1])
@@ -111,17 +111,17 @@ func (b *Bot) Pickpocket(C string, U User) {
         } else {
           if x > 40 {
             if stealP > itPoints {
-              Update("user", "points = points + "+tPoints, "'"+U.username+"'")
-              Update("user", "points = points - "+tPoints, "'"+target+"'")
+              Update("user", "points = points + "+tPoints, "name", "'"+U.username+"'")
+              Update("user", "points = points - "+tPoints, "name", "'"+target+"'")
               b.SendMsg(U.displayName + " stole all of "+msgSplit[1]+"'s "+tPoints+" points TriHard")
             } else {
-              Update("user", "points = points + "+strconv.Itoa(stealP), "'"+U.username+"'")
-              Update("user", "points = points - "+strconv.Itoa(stealP), "'"+target+"'")
+              Update("user", "points = points + "+strconv.Itoa(stealP), "name", "'"+U.username+"'")
+              Update("user", "points = points - "+strconv.Itoa(stealP), "name", "'"+target+"'")
               b.SendMsg(U.displayName + " stole "+strconv.Itoa(stealP)+" points from "+msgSplit[1]+" TriHard")
             }
           } else if x < 10 {
             lPoints := strconv.Itoa(int(fuPoints * 0.1))
-            Update("user", "points = points - "+lPoints, "'"+U.username+"'")
+            Update("user", "points = points - "+lPoints, "name", "'"+U.username+"'")
             b.SendMsg(U.displayName + " got caught trying to steal points from "+msgSplit[1]+" and loses "+lPoints+" points")
           } else {
             b.SendMsg(U.displayName + " failed to steal points from "+msgSplit[1])

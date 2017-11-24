@@ -34,14 +34,14 @@ func (b *Bot) UpdatePoints() {
   copy(allChatters[len(app.Chatters.Mods):], app.Chatters.Viewers)
   
   for i := 0; i < len(allChatters); i++ {
-    Update("user", "points = points + 5", "'"+allChatters[i]+"'")
+    Update("user", "points = points + 5", "name", "'"+allChatters[i]+"'")
   }
 }
 
 func (b *Bot) UpdateLines(U User) {
   StringOldPoints := Query("user", "points", U.username)
   if StringOldPoints != "" {
-    Update("user", "num_lines = num_lines + 1", "'"+U.username+"'")
+    Update("user", "num_lines = num_lines + 1", "name", "'"+U.username+"'")
     Insert("chatlogs (userId, log)", "('"+U.userId+"', '" +U.message+"')")
   } else {
     Insert("user (name, userId, points, num_lines, level, isMod)", "('"+U.username+"', '"+U.userId+"', '0', '1', '100', '"+U.mod+"')")
