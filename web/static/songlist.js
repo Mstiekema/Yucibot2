@@ -14,7 +14,7 @@ function initWS() {
     var msg = JSON.parse(e.data)
     if (msg["Msg"] == "pushSonglist") {
       vids = JSON.parse(e.data)
-    } else if (msg["Msg"] = "prevSongInfo") {
+    } else if (msg["Msg"] == "prevSongInfo") {
       player.loadVideoById({
         'videoId': msg["Songid"][0],
         'startSeconds': 0,

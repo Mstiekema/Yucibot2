@@ -7,4 +7,5 @@ func (b *Bot) Modules(C string, U User) {
   b.Slot(C, U)
   b.Pickpocket(C, U)
   b.Songrequest(C, U)
+  go b.Clr(C, U)
 }

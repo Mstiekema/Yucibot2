@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Yucibot CLR</title>
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.js"></script>
+<style>
+body {
+  overflow: hidden;
+}
+
+p {
+  color: lightgray;
+  text-shadow: 2px 2px 2px black;
+  font-size: 40;
+  font-family: 'Roboto', sans-serif;
+}
+
+.gif {
+  position: absolute;
+  width: 300px;
+  height: 200px;
+  top: 25%;
+  left: 50%;
+  margin: -100px 0 0 -150px;
+}
+
+#meme {
+  position: absolute;
+  width: 640px;
+  height: 360px;
+  top: 25%;
+  left: 50%;
+  margin: -100px 0 0 -320px;
+}
+</style>
+</head>
+<body>
+<video id="meme" width="640" height="360" autoplay="true">
+  <source src="test" type="video/mp4">
+</video>
+<div class="gif"></div>
+</body>
+<script type="text/javascript" src="/../static/clr.js"></script>
+</html>
