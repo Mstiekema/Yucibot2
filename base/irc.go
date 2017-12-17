@@ -95,6 +95,7 @@ func (b *Bot) parseMsg(m string) {
     
     // Events
     b.UpdateLines(User)
+    b.Links(User)
     
     // Commands
     var comm string

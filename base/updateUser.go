@@ -18,7 +18,7 @@ type AllUsers struct {
 
 func (b *Bot) UpdatePoints() {
   var netClient = &http.Client{Timeout: time.Second * 10,}
-  resp, _ := netClient.Get("https://tmi.twitch.tv/group/user/mstiekema/chatters")
+  resp, _ := netClient.Get("https://tmi.twitch.tv/group/user/merijn/chatters")
   defer resp.Body.Close()
   
   body, _ := ioutil.ReadAll(resp.Body)
