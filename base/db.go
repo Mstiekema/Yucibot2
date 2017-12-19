@@ -41,7 +41,7 @@ func Update(tbl, row, name, where string) {
 
 func Delete(tbl, row, where string) {
   var db = Conn()
-  db.Exec("DELETE FROM "+tbl+" WHERE "+row+" = "+where)
+  db.Exec("DELETE FROM "+tbl+" WHERE "+row+" = '"+where+"'")
 }
 
 func Insert(tbl, set string) {

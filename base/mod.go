@@ -8,7 +8,7 @@ import (
 
 var allowedUser string
 
-func (b *Bot) Links(U User) {  
+func (b *Bot) Links(U User) {
   msgSplit := make([]string, len(strings.SplitAfter(U.message, " ")))
   var c string
   var u string
@@ -38,5 +38,35 @@ func (b *Bot) Links(U User) {
     time.AfterFunc(30 * time.Second, func() {
       allowedUser = ""
     })  
+  }
+}
+
+func (b *Bot) ModifyCommands(C string, U User) {
+  if U.mod == "true" || U.username == strings.ToLower(b.Channel) {
+    split := strings.SplitAfter(U.message, " ")
+    if C == "!addcom" || C == "!addcommand" {
+      if 2 < len(strings.SplitAfter(U.message, " ")) {
+        commName := split[1]
+        if strings.HasPrefix(commName, "!") != true {commName = "!"+commName}
+        commResp := strings.Join(append(split[2:]), "")
+        Insert("commands (commName, response, cdType, cd)", "('"+commName+"', '"+commResp+"', 'global', '10')")
+        b.SendWhisper("Succesfully added "+commName+" to the database.", U.username)
+      }
+    } else if C == "!editcom" || C == "!editcommand" {
+      if 2 < len(strings.SplitAfter(U.message, " ")) {
+        commName := split[1]
+        if strings.HasPrefix(commName, "!") != true {commName = "!"+commName}
+        commResp := strings.Join(append(split[2:]), "")
+        Update("commands", "response = '"+commResp+"'", "commName", "'"+commName+"'")
+        b.SendWhisper("Succesfully edited the "+commName+" command.", U.username)
+      }
+    } else if C == "!remcom" || C == "!removecommand" {
+      if 1 < len(strings.SplitAfter(U.message, " ")) {
+        commName := strings.TrimSpace(split[1])
+        if strings.HasPrefix(commName, "!") != true {commName = "!"+commName}
+        Delete("commands", "commName", commName)
+        b.SendWhisper("Succesfully removed "+commName+" from the database.", U.username)
+      }
+    }
   }
 }

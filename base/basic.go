@@ -33,6 +33,13 @@ func (b *Bot) UserInfoComms(C string, U User) {
   }
 }
 
+func (b *Bot) CustomCommands(C string, U User) {
+  var res = Query("SELECT response FROM commands WHERE commDesc IS NULL AND commName = '"+strings.SplitAfter(U.message, " ")[0]+"'")
+  if res != "" {
+    b.SendMsg(res)
+  }
+}
+
 func (b *Bot) Basic(C string, U User) {
   viper.SetConfigFile("./config.toml")
   viper.ReadInConfig()
