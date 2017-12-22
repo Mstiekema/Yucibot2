@@ -5,7 +5,29 @@ import (
   "strings"
   "math/rand"
   "strconv"
+  "time"
 )
+
+var participants []User
+var rafState = false
+
+func (b *Bot) Raffle(C string, U User) {
+  if C == "!raffle" {
+    b.StartRaffle(30, 1000, false, U)
+  }
+  // if C == "!multiraffle" {
+  //   b.StartRaffle(30, 1000, true, U)
+  // }
+  if C == "!join" && rafState == true {
+    for _, usr := range participants {
+      if usr == U {
+        return
+      }
+    }
+    participants = append(participants, U)
+    fmt.Println(participants)
+  }
+}
 
 func (b *Bot) Roulette(C string, U User) {
   if C == "!roulette" {
@@ -134,4 +156,30 @@ func (b *Bot) Pickpocket(C string, U User) {
       b.SendMsg("Invalid pickpocket command")
     }
   }
+}
+
+func (b *Bot) StartRaffle(dur float64, points int, multi bool, U User) {
+  var m string
+  rafState = true
+  if multi == true { m = "multi" } else { m = "" }
+  
+  b.SendMsg("Started "+m+"raffle for "+strconv.Itoa(points)+" points! Type !join to join the "+m+"raffle PogChamp")
+  time.AfterFunc(time.Duration(int(dur*0.25)) * time.Second, func() {b.SendMsg("Hurry up! You still have "+strconv.Itoa(int(dur*0.75))+" seconds left to join the "+m+"raffle for "+strconv.Itoa(points)+" points!")})
+  time.AfterFunc(time.Duration(int(dur*0.5)) * time.Second, func() {b.SendMsg("Hurry up! You still have "+strconv.Itoa(int(dur*0.5))+" seconds left to join the "+m+"raffle for "+strconv.Itoa(points)+" points!")})
+  time.AfterFunc(time.Duration(int(dur*0.75)) * time.Second, func() {b.SendMsg("Hurry up! You still have "+strconv.Itoa(int(dur*0.25))+" seconds left to join the "+m+"raffle for "+strconv.Itoa(points)+" points!")})
+  
+  time.AfterFunc(time.Duration(dur) * time.Second, func() {
+    rafState = false
+    if multi == true {
+      // Do multiraffle stuff
+      // b.SendMsg("The raffle has finished! The following users have won "+"points"+" points! "+"users"+" PogChamp")
+    } else {
+      ran := int(rand.Float64() * float64(len(participants)))
+      if ran == len(participants) {ran = ran-1}
+      winner := participants[ran]
+      Update("user", "points = points + '"+strconv.Itoa(points)+"'", "name", "'"+winner.username+"'")
+      b.SendMsg("The raffle has finished! "+winner.displayName+" has won "+strconv.Itoa(points)+" points PogChamp")
+    }
+    participants = participants[:0]
+  })
 }
