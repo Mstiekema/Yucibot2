@@ -1,7 +1,6 @@
 package base
 
 import (
-  "fmt"
   "strings"
   "math/rand"
   "strconv"
@@ -13,11 +12,41 @@ var rafState = false
 
 func (b *Bot) Raffle(C string, U User) {
   if C == "!raffle" {
-    b.StartRaffle(30, 1000, false, U)
+    var dur int
+    var points int
+    if 2 < len(strings.SplitAfter(U.message, " ")) {
+      points, _ = strconv.Atoi(strings.TrimSpace(strings.SplitAfter(U.message, " ")[1]))
+      dur, _ = strconv.Atoi(strings.TrimSpace(strings.SplitAfter(U.message, " ")[2]))
+    } else if 1 < len(strings.SplitAfter(U.message, " ")) {
+      points, _ = strconv.Atoi(strings.TrimSpace(strings.SplitAfter(U.message, " ")[1]))
+      dur = 30
+    } else {
+      points = 3000
+      dur = 30
+    }
+    b.StartRaffle(float64(dur), points, false, U)
   }
-  // if C == "!multiraffle" {
-  //   b.StartRaffle(30, 1000, true, U)
-  // }
+  if C == "!multiraffle" {
+    var dur int
+    var points int
+    
+    for i := 0; i < 20; i++ {
+      U.username = strconv.Itoa(i)
+      participants = append(participants, U)
+    }
+    
+    if 2 < len(strings.SplitAfter(U.message, " ")) {
+      points, _ = strconv.Atoi(strings.TrimSpace(strings.SplitAfter(U.message, " ")[1]))
+      dur, _ = strconv.Atoi(strings.TrimSpace(strings.SplitAfter(U.message, " ")[2]))
+    } else if 1 < len(strings.SplitAfter(U.message, " ")) {
+      points, _ = strconv.Atoi(strings.TrimSpace(strings.SplitAfter(U.message, " ")[1]))
+      dur = 30
+    } else {
+      points = 3000
+      dur = 30
+    }
+    b.StartRaffle(float64(dur), points, true, U)
+  }
   if C == "!join" && rafState == true {
     for _, usr := range participants {
       if usr == U {
@@ -25,7 +54,6 @@ func (b *Bot) Raffle(C string, U User) {
       }
     }
     participants = append(participants, U)
-    fmt.Println(participants)
   }
 }
 
@@ -42,7 +70,6 @@ func (b *Bot) Roulette(C string, U User) {
         if roulPoints > 0 {
           if roulPoints <= oldPoints {
             ran := rand.Float64()
-            fmt.Println(ran)
             if ran > 0.5 {
               nPoints := oldPoints + roulPoints
               snPoints := strconv.Itoa(nPoints)
@@ -171,9 +198,22 @@ func (b *Bot) StartRaffle(dur float64, points int, multi bool, U User) {
   time.AfterFunc(time.Duration(dur) * time.Second, func() {
     rafState = false
     if multi == true {
-      // Do multiraffle stuff
-      // b.SendMsg("The raffle has finished! The following users have won "+"points"+" points! "+"users"+" PogChamp")
+      winners := ""
+      winP := int((rand.Float64() * float64(len(participants)) / 100) * ((rand.Float64() * 25) + 5)) + 1
+      wPoints := points / winP
+      for i := 0; i < winP; i++ {
+        j := int(rand.Float64() * float64(len(participants)))
+        winners = winners + " " + participants[j].displayName
+        Update("user", "points = points + '"+strconv.Itoa(wPoints)+"'", "name", "'"+participants[j].username+"'")
+        for i, v := range participants {
+          if v == participants[j] {
+            participants = append(participants[:i], participants[i+1:]...)
+          }
+        }
+      }
+      b.SendMsg("The raffle has finished! "+strconv.Itoa(winP)+" users have won "+strconv.Itoa(wPoints)+" points each! The winners are:"+winners+" PogChamp")
     } else {
+      if len(participants) == 0 {b.SendMsg("No one joined the raffle DansGame"); return}
       ran := int(rand.Float64() * float64(len(participants)))
       if ran == len(participants) {ran = ran-1}
       winner := participants[ran]
