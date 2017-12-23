@@ -29,12 +29,7 @@ func (b *Bot) Raffle(C string, U User) {
   if C == "!multiraffle" {
     var dur int
     var points int
-    
-    for i := 0; i < 20; i++ {
-      U.username = strconv.Itoa(i)
-      participants = append(participants, U)
-    }
-    
+
     if 2 < len(strings.SplitAfter(U.message, " ")) {
       points, _ = strconv.Atoi(strings.TrimSpace(strings.SplitAfter(U.message, " ")[1]))
       dur, _ = strconv.Atoi(strings.TrimSpace(strings.SplitAfter(U.message, " ")[2]))
