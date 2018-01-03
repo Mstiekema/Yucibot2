@@ -19,80 +19,164 @@ type StreamInfo struct {
 
 func (b *Bot) UserInfoComms(C string, U User) {
   if C == "!points" {
-    var res = Query("SELECT points FROM user WHERE name = '"+U.username+"'")
-    if res != "" {b.SendWhisper("You currently have " + res + " points", U.username)}
+    exec := func() {
+      var res = Query("SELECT points FROM user WHERE name = '"+U.username+"'")
+      if res != "" {b.SendWhisper("You currently have " + res + " points", U.username)}
+    }
+    b.ExecuteCommand(C, "100", "0", "10", U, exec)
   } else if C == "!userpoints" {
-    var res = Query("SELECT points FROM user WHERE name = '"+U.username+"'")
-    if res != "" {b.SendMsg(U.displayName + " currently has " + res + " points")}
+    exec := func() {
+      var res = Query("SELECT points FROM user WHERE name = '"+U.username+"'")
+      if res != "" {b.SendMsg(U.displayName + " currently has " + res + " points")}
+    }
+    b.ExecuteCommand(C, "100", "0", "10", U, exec)
   } else if C == "!lines" {
-    var res = Query("SELECT num_lines FROM user WHERE name = '"+U.username+"'")
-    if res != "" {b.SendWhisper("You have currently written " + res + " lines", U.username)}
+    exec := func() {
+      var res = Query("SELECT num_lines FROM user WHERE name = '"+U.username+"'")
+      if res != "" {b.SendWhisper("You have currently written " + res + " lines", U.username)}
+    }
+    b.ExecuteCommand(C, "100", "0", "10", U, exec)
   } else if C == "!rq" {
-    line := Query("SELECT log FROM chatlogs WHERE userId = '"+U.userId+"' ORDER BY RAND() LIMIT 1")
-    if line != "" {b.SendMsg(U.displayName+": "+line)}
+    exec := func() {
+      line := Query("SELECT log FROM chatlogs WHERE userId = '"+U.userId+"' ORDER BY RAND() LIMIT 1")
+      if line != "" {b.SendMsg(U.displayName+": "+line)}
+    }
+    b.ExecuteCommand(C, "100", "0", "10", U, exec)
   }
 }
 
 func (b *Bot) CustomCommands(C string, U User) {
-  var res = Query("SELECT response FROM commands WHERE commDesc IS NULL AND commName = '"+strings.SplitAfter(U.message, " ")[0]+"'")
-  if res != "" {
-    b.SendMsg(res)
+  var db = Conn()
+  var response, level, points, cd string
+  res, _ := db.Query(`SELECT response, level, points, cd FROM commands WHERE commDesc IS NULL AND commName = "`+C+`"`)
+  for res.Next() {
+    res.Scan(&response, &level, &points, &cd)
+    if response != "" {
+      exec := func() {b.SendMsg(response)}
+      b.ExecuteCommand(C, level, points, cd, U, exec)    
+    }
   }
+}
+
+var uCooldowns []string
+var gCooldowns []string
+type fn func()
+
+func (b *Bot) ExecuteCommand(C, level, points, cd string, U User, exec fn) {
+  toCd := C+U.username
+  for _, b := range gCooldowns { if b == C { return } }
+  for _, b := range uCooldowns { if b == toCd { return } }
+  if level != "100" {
+    if U.mod == "1" { U.sub = "1" }
+    if level == "150" && U.sub == "0" {
+      b.SendWhisper("You have to be a subscriber to use this command.", U.username)
+      return
+    }
+    if level == "300" && !(U.username == strings.ToLower(b.Channel) || U.mod == "1") {
+      b.SendWhisper("You have to be a moderator to use this command.", U.username)
+      return
+    }
+  }
+  if points != "0" {
+    uPoints, _ := strconv.Atoi(Query(`SELECT points FROM user WHERE name = "`+U.username+`"`))
+    Points, _ := strconv.Atoi(points)
+    if uPoints >= Points {
+      Update("user", "points = points - "+points, "name", "'"+U.username+"'")
+    } else {
+      b.SendWhisper("You do not have enough points to use this command.", U.username)
+      return
+    }
+  }
+  uCooldowns = append(uCooldowns, toCd)
+  gCooldowns = append(gCooldowns, C)
+  exec()
+  cdi, _ := strconv.Atoi(cd)
+  time.AfterFunc(time.Duration(cdi) * time.Second, func() {
+    for i, v := range uCooldowns {
+      if v == toCd {
+        if len(uCooldowns) == 0 {uCooldowns = uCooldowns[:0]}
+        uCooldowns = append(uCooldowns[:i], uCooldowns[i+1:]...)
+      }
+    }
+  })
+  gCd := 10
+  if C == "!sr" || C == "!songrequest" {gCd = 1}
+  time.AfterFunc(time.Duration(gCd) * time.Second, func() {
+    for i, v := range gCooldowns {
+      if v == C {
+        if len(gCooldowns) == 0 {gCooldowns = gCooldowns[:0]}
+        gCooldowns = append(gCooldowns[:i], gCooldowns[i+1:]...)
+      }
+    }
+  })
 }
 
 func (b *Bot) Basic(C string, U User) {
   viper.SetConfigFile("./config.toml")
   viper.ReadInConfig()
-  if C == "!test" {
-    b.SendMsg("This is a test message created by " + U.displayName + " FeelsGoodMan")
-  } else if C == "!followage" {
-    if 2 == len(strings.SplitAfter(U.message, " ")) {
-      user := strings.TrimSpace(strings.SplitAfter(U.message, " ")[1])
-      b.getFollowAge(user, b.Channel)
-    } else if 2 < len(strings.Split(U.message, " ")) {
-      user := strings.TrimSpace(strings.SplitAfter(U.message, " ")[1])
-      chnl := strings.TrimSpace(strings.Split(U.message, " ")[2])
-      b.getFollowAge(user, chnl)
-    } else {
-      b.getFollowAge(U.displayName, b.Channel)
+  if C == "!followage" {
+    exec := func() {
+      if 2 == len(strings.SplitAfter(U.message, " ")) {
+        user := strings.TrimSpace(strings.SplitAfter(U.message, " ")[1])
+        b.getFollowAge(user, b.Channel)
+      } else if 2 < len(strings.Split(U.message, " ")) {
+        user := strings.TrimSpace(strings.SplitAfter(U.message, " ")[1])
+        chnl := strings.TrimSpace(strings.Split(U.message, " ")[2])
+        b.getFollowAge(user, chnl)
+      } else {
+        b.getFollowAge(U.displayName, b.Channel)
+      }
     }
+    b.ExecuteCommand(C, "100", "0", "10", U, exec)
   } else if C == "!followsince" {
-    if 2 == len(strings.SplitAfter(U.message, " ")) {
-      user := strings.TrimSpace(strings.SplitAfter(U.message, " ")[1])
-      b.getFollowSince(user, b.Channel)
-    } else if 2 < len(strings.Split(U.message, " ")) {
-      user := strings.TrimSpace(strings.SplitAfter(U.message, " ")[1])
-      chnl := strings.TrimSpace(strings.Split(U.message, " ")[2])
-      b.getFollowSince(user, chnl)
-    } else {
-      b.getFollowSince(U.displayName, b.Channel)
+    exec := func() {
+      if 2 == len(strings.SplitAfter(U.message, " ")) {
+        user := strings.TrimSpace(strings.SplitAfter(U.message, " ")[1])
+        b.getFollowSince(user, b.Channel)
+      } else if 2 < len(strings.Split(U.message, " ")) {
+        user := strings.TrimSpace(strings.SplitAfter(U.message, " ")[1])
+        chnl := strings.TrimSpace(strings.Split(U.message, " ")[2])
+        b.getFollowSince(user, chnl)
+      } else {
+        b.getFollowSince(U.displayName, b.Channel)
+      }
     }
+    b.ExecuteCommand(C, "100", "0", "10", U, exec)
   } else if C == "!viewers" {
-    info := getStreamInfo(b.Channel)
-    if len(info.Data) != 0 {
-      b.SendMsg(b.Channel+" currently has "+strconv.Itoa(info.Data[0].ViewerCount)+" viewers")
-    } else {
-      b.SendMsg(b.Channel+" is currently offline")
+    exec := func() {
+      info := getStreamInfo(b.Channel)
+      if len(info.Data) != 0 {
+        b.SendMsg(b.Channel+" currently has "+strconv.Itoa(info.Data[0].ViewerCount)+" viewers")
+      } else {
+        b.SendMsg(b.Channel+" is currently offline")
+      }
     }
+    b.ExecuteCommand(C, "100", "0", "10", U, exec)
   } else if C == "!title" {
-    info := getStreamInfo(b.Channel)
-    if len(info.Data) != 0 {
-      b.SendMsg("Current title: "+info.Data[0].Title)
-    } else {
-      b.SendMsg(b.Channel+" is currently offline")
+    exec := func() {    
+      info := getStreamInfo(b.Channel)
+      if len(info.Data) != 0 {
+        b.SendMsg("Current title: "+info.Data[0].Title)
+      } else {
+        b.SendMsg(b.Channel+" is currently offline")
+      }
     }
+    b.ExecuteCommand(C, "100", "0", "10", U, exec)
   } else if C == "!uptime" {
-    resp, _ := http.Get("http://api.yucibot.nl/user/uptime/"+b.Channel)
-    defer resp.Body.Close()
-    body, _ := ioutil.ReadAll(resp.Body)
-    text := string(body[:])
-    if strings.Contains(text, "</html>") {
-      return
-    } else if !strings.Contains(text, "is not live") {
-      b.SendMsg(b.Channel+" has been live for "+text)
-    } else {
-      b.SendMsg(text)
+    exec := func() {
+      resp, _ := http.Get("http://api.yucibot.nl/user/uptime/"+b.Channel)
+      defer resp.Body.Close()
+      body, _ := ioutil.ReadAll(resp.Body)
+      text := string(body[:])
+      if strings.Contains(text, "</html>") {
+        return
+      } else if !strings.Contains(text, "is not live") {
+        b.SendMsg(b.Channel+" has been live for "+text)
+      } else {
+        b.SendMsg(text)
+      }
     }
+    b.ExecuteCommand(C, "100", "0", "10", U, exec)
   } 
 }
 

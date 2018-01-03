@@ -40,31 +40,34 @@ func (b *Bot) Songrequest(C string, U User) {
     msgSplit := strings.SplitAfter(U.message, " ")
     i := 1
     if  (i >= 1 && i < len(strings.SplitAfter(U.message, " "))) {
-      regex, _ := regexp.Compile(`(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)`)
-      id := strings.SplitAfter(regex.FindString(msgSplit[1]) , "?v=")
-      if len(id) >= 2 {
-        b.getLinkInfo(id[1], C, U)
-      } else {
-        if len(msgSplit[1]) == 11 {
-          b.getLinkInfo(msgSplit[1], C, U)
+      exec := func() {    
+        regex, _ := regexp.Compile(`(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)`)
+        id := strings.SplitAfter(regex.FindString(msgSplit[1]) , "?v=")
+        if len(id) >= 2 {
+          b.getLinkInfo(id[1], C, U)
         } else {
-          songWordsArr := append(msgSplit[1:])
-          song := strings.Join(songWordsArr, "")
-          song = strings.Replace(song, " ", "%20", -1)
-          var netClient = &http.Client{Timeout: time.Second * 10,}
-          resp, _ := netClient.Get("https://www.googleapis.com/youtube/v3/search?part=id&q="+song+"&key="+b.ytApiKey)
-          defer resp.Body.Close()
-          
-          body, _ := ioutil.ReadAll(resp.Body)
-          vidWords := VidByWords{}
-          err := json.Unmarshal(body, &vidWords)
-          if err != nil {
-            fmt.Println(err)
-            return
+          if len(msgSplit[1]) == 11 {
+            b.getLinkInfo(msgSplit[1], C, U)
+          } else {
+            songWordsArr := append(msgSplit[1:])
+            song := strings.Join(songWordsArr, "")
+            song = strings.Replace(song, " ", "%20", -1)
+            var netClient = &http.Client{Timeout: time.Second * 10,}
+            resp, _ := netClient.Get("https://www.googleapis.com/youtube/v3/search?part=id&q="+song+"&key="+b.ytApiKey)
+            defer resp.Body.Close()
+            
+            body, _ := ioutil.ReadAll(resp.Body)
+            vidWords := VidByWords{}
+            err := json.Unmarshal(body, &vidWords)
+            if err != nil {
+              fmt.Println(err)
+              return
+            }
+            b.getLinkInfo(vidWords.Items[0].Vid.Id, C, U)
           }
-          b.getLinkInfo(vidWords.Items[0].Vid.Id, C, U)
         }
       }
+      b.ExecuteCommand(C, "150", "0", "10", U, exec)
     }
   }
 }
