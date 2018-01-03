@@ -24,7 +24,7 @@ func (b *Bot) Raffle(C string, U User) {
       points = 3000
       dur = 30
     }
-    b.StartRaffle(float64(dur), points, false, U)
+    b.StartRaffle(float64(dur), points, false)
   }
   if C == "!multiraffle" {
     var dur int
@@ -40,7 +40,7 @@ func (b *Bot) Raffle(C string, U User) {
       points = 3000
       dur = 30
     }
-    b.StartRaffle(float64(dur), points, true, U)
+    b.StartRaffle(float64(dur), points, true)
   }
   if C == "!join" && rafState == true {
     for _, usr := range participants {
@@ -189,7 +189,7 @@ func (b *Bot) Pickpocket(C string, U User) {
   }
 }
 
-func (b *Bot) StartRaffle(dur float64, points int, multi bool, U User) {
+func (b *Bot) StartRaffle(dur float64, points int, multi bool) {
   var m string
   rafState = true
   if multi == true { m = "multi" } else { m = "" }

@@ -72,13 +72,12 @@ func (b *Bot) Reader(conn net.Conn) {
     if strings.HasPrefix(line, "PING") {
       fmt.Fprintf(conn, "PONG \r\n")
     }
-    b.parseMsg(line)
+    b.ParseMsg(line)
   }
 }
 
-func (b *Bot) parseMsg(m string) {
-  i := 1
-  if i >= 1 && i < len(strings.SplitAfter(m, "PRIVMSG")) {
+func (b *Bot) ParseMsg(m string) {
+  if 1 < len(strings.SplitAfter(m, "PRIVMSG")) {
     mWithUser := strings.SplitAfter(m, "PRIVMSG")[1]
     mWithUser = strings.TrimPrefix(mWithUser, " #")
     msg := strings.TrimSpace(strings.SplitAfterN(mWithUser, ":", 2)[1])
@@ -92,21 +91,29 @@ func (b *Bot) parseMsg(m string) {
     User.message = msg
     User.mod = strings.SplitAfter(m, ";")[5][4:len(strings.SplitAfter(m, ";")[5])-1]
     User.sub = strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "subscriber=")[1], ";")[0], ";")
-    
-    // Events
+
     b.UpdateLines(User)
     b.Links(User)
     
-    // Commands
     var comm string
     i := 1
     if  i >= 1 && i < len(strings.SplitAfter(msg, " ")) {
       comm = strings.SplitN(msg, " ", 2)[0]
     } else {
       comm = msg
-    }    
+    }
     if strings.HasPrefix(msg, "!") == false {return}
     b.Modules(comm, User)
+  }
+  if 1 < len(strings.SplitAfter(m, "USERNOTICE")) {
+    noticeType := strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "msg-id=")[1], ";")[0], ";")
+    if noticeType == "sub" || noticeType == "resub" {
+      username := strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "login=")[1], ";")[0], ";")
+      displayName := strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "display-name=")[1], ";")[0], ";")
+      months := strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "msg-param-months=")[1], ";")[0], ";")
+      plan := strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "msg-param-sub-plan=")[1], ";")[0], ";")
+      b.Subs(noticeType, username, displayName, months, plan)      
+    }
   }
 }
 
