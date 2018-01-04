@@ -1,13 +1,13 @@
 {{define "content"}}
 <div class="main">
-<h2>User page | {{.Username}}</h2>
-{{ if .Points }}
+<h2>User page | {{.Values.Info.Username}}</h2>
+{{ if .Values.Info.Points }}
 <p>
-  Points: {{.Points}}<br>
-  Lines: {{.Lines}}<br>
+  Points: {{.Values.Info.Points}}<br>
+  Lines: {{.Values.Info.Lines}}<br>
 </p>
 {{ else }}
-  <h4>{{.Username}} was not found in the database</h4>
+  <h4>{{.Values.Info.Username}} was not found in the database</h4>
 {{ end }}
 </div>
 {{end}}

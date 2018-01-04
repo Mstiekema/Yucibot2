@@ -9,7 +9,10 @@ import (
   "encoding/json"
   "net/http"
   "log"
+  
+  "github.com/gorilla/mux"
   "github.com/gorilla/websocket"
+  "github.com/markbates/goth/gothic"
   "github.com/Mstiekema/Yucibot2/base"
 )
 
@@ -80,32 +83,34 @@ func getSongs(qry, date string) map[string]interface {} {
 }
 
 func Songlist(w http.ResponseWriter, r *http.Request) {
-  date := strings.Replace(strings.SplitAfter(r.URL.Path, "/")[2], "/", "", 2)
-  if date == "" {
-    y, m, d := time.Now().Date()
-    date = strconv.Itoa(y)+"-"+strconv.Itoa(int(m))+"-"+strconv.Itoa(d)
-  }
+  v := mux.Vars(r)
+  date := v["date"]
   var Songs = getSongs("SELECT name, title, thumb, length, songid, playState FROM songrequest WHERE DATE(time) =", date)
-  
-  t, err := template.New("").ParseFiles("./web/templates/songlist.html", "./web/templates/header.html")
-  if err != nil {
-    log.Print("template parsing error: ", err)
-  }
-  err = t.ExecuteTemplate(w, "base", Songs)
-  if err != nil {
-    log.Print("template executing error: ", err)
-  }  
+  LoadPage(w, r, "./web/templates/songlist.html", Songs) 
+}
+
+func TodaySonglist(w http.ResponseWriter, r *http.Request) {
+  y, m, d := time.Now().Date()
+  date := strconv.Itoa(y)+"-"+strconv.Itoa(int(m))+"-"+strconv.Itoa(d)
+  w.Header().Set("Location", "/songlist/"+date)
+  w.WriteHeader(http.StatusTemporaryRedirect)
 }
 
 func AdminSonglist(w http.ResponseWriter, r *http.Request) {
-  t, err := template.New("").ParseFiles("./web/templates/adminSonglist.html", "./web/templates/header.html")
-  if err != nil {
-    log.Print("template parsing error: ", err)
+  session, _ := gothic.Store.Get(r, "loginSession")
+  var lvl int
+  
+  if session.Values["level"] == nil {
+    lvl = 100
+  } else {
+    lvl, _ = strconv.Atoi(session.Values["level"].(string))
   }
-  err = t.ExecuteTemplate(w, "base", nil)
-  if err != nil {
-    log.Print("template executing error: ", err)
+  
+  if lvl < 200 {
+    LoadPage(w, r, "./web/templates/401.html", nil) 
   }
+  
+  LoadPage(w, r, "./web/templates/adminSonglist.html", nil) 
 }
 
 func SendSongs(w http.ResponseWriter, r *http.Request) {

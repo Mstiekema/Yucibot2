@@ -5,6 +5,7 @@ channel = "mstiekema"
 admin = "mstiekema"
 clientId = "clientId"
 clientSecret = "clientSecret"
+loginCallbackUrl = "http://localhost:9090/auth/twitch/callback"
 
 [apiKeys]
 ytApiKey = "somekey"
