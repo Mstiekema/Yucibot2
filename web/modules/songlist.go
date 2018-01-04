@@ -10,7 +10,6 @@ import (
   
   "github.com/gorilla/mux"
   "github.com/gorilla/websocket"
-  "github.com/markbates/goth/gothic"
   "github.com/Mstiekema/Yucibot2/base"
 )
 
@@ -92,24 +91,6 @@ func TodaySonglist(w http.ResponseWriter, r *http.Request) {
   date := strconv.Itoa(y)+"-"+strconv.Itoa(int(m))+"-"+strconv.Itoa(d)
   w.Header().Set("Location", "/songlist/"+date)
   w.WriteHeader(http.StatusTemporaryRedirect)
-}
-
-func AdminSonglist(w http.ResponseWriter, r *http.Request) {
-  session, _ := gothic.Store.Get(r, "loginSession")
-  var lvl int
-  
-  if session.Values["level"] == nil {
-    lvl = 100
-  } else {
-    lvl, _ = strconv.Atoi(session.Values["level"].(string))
-  }
-  
-  if lvl < 200 {
-    LoadPage(w, r, "./web/templates/401.html", nil)
-    return
-  }
-  
-  LoadPage(w, r, "./web/templates/adminSonglist.html", nil) 
 }
 
 func SendSongs(w http.ResponseWriter, r *http.Request) {

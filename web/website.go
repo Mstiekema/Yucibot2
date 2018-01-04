@@ -22,16 +22,21 @@ func MainWeb() {
   goth.UseProviders(twitch.New(viper.GetString("twitch.clientId"), viper.GetString("twitch.clientSecret"), viper.GetString("twitch.loginCallbackUrl")),)
   
   r.HandleFunc("/", webmods.Home)
-  r.HandleFunc("/clr", webmods.CLR)
+  r.HandleFunc("/commands", webmods.Commands)
+  r.HandleFunc("/stats", webmods.Stats)
   r.HandleFunc("/songlist/", webmods.TodaySonglist)
   r.HandleFunc("/songlist/{date}", webmods.Songlist)
   go r.HandleFunc("/user/{username}", webmods.UserPage)
+  r.HandleFunc("/clr", webmods.CLR)
   r.HandleFunc("/auth/{provider}/callback", webmods.Login)
   r.HandleFunc("/auth/{provider}", gothic.BeginAuthHandler)
   r.HandleFunc("/logout", webmods.Logout)
   r.NotFoundHandler = http.HandlerFunc(webmods.Error)
   
   r.HandleFunc("/admin/songlist", webmods.AdminSonglist)
+  r.HandleFunc("/admin/modules", webmods.AdminModules)
+  r.HandleFunc("/admin/clr", webmods.AdminClr)
+  r.HandleFunc("/admin/commands", webmods.AdminCommands)
   
   hub := webmods.NewHub()
   go hub.Run()

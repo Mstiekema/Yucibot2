@@ -15,6 +15,14 @@ func Error(w http.ResponseWriter, r *http.Request) {
   LoadPage(w, r, "./web/templates/404.html", nil)
 }
 
+func Commands(w http.ResponseWriter, r *http.Request){
+  LoadPage(w, r, "./web/templates/commands.html", nil)
+}
+
+func Stats(w http.ResponseWriter, r *http.Request){
+  LoadPage(w, r, "./web/templates/stats.html", nil)
+}
+
 func LoadPage(w http.ResponseWriter, r *http.Request, tmpl string, data interface{}) {
   session, _ := gothic.Store.Get(r, "loginSession")
   if data != nil {
