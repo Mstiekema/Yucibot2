@@ -18,12 +18,16 @@ type AllUsers struct {
 
 func (b *Bot) UpdatePoints() {
   var netClient = &http.Client{Timeout: time.Second * 10,}
-  resp, _ := netClient.Get("https://tmi.twitch.tv/group/user/merijn/chatters")
+  resp, err := netClient.Get("https://tmi.twitch.tv/group/user/merijn/chatters")
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
   defer resp.Body.Close()
   
   body, _ := ioutil.ReadAll(resp.Body)
   app := AllUsers{}
-  err := json.Unmarshal(body, &app)
+  err = json.Unmarshal(body, &app)
   if err != nil {
     fmt.Println(err)
     return
