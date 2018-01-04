@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="shortcut icon" href="/../static/favicon.ico" />
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
@@ -18,9 +19,10 @@ $(document).ready(function () {
 	var loc = $('.pure-menu-item').find('a').attr('href');
 	var url = location.href.split('/')
 	var urlEnd = "/" + url[3]
+	if (urlEnd == "/user") return
 	var div = $('a[href^="'+urlEnd+'"]')[0];
   $(".pure-menu-item a").removeClass("active");
-    $(div).addClass('active');
+  $(div).addClass('active');
 });
 </script>
 <title>Yucibot</title>
@@ -35,12 +37,29 @@ $(document).ready(function () {
 		<li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover"><a class="pure-menu-link" href="/admin">Admin</a>
 			<ul class="pure-menu-children">
 				<li class="pure-menu-item"><a class="pure-menu-link" href="/admin/songlist">Songlist</a></li>
+				<li class="pure-menu-item"><a class="pure-menu-link" href="/admin/modules">Modules</a></li>
+				<li class="pure-menu-item"><a class="pure-menu-link" href="/admin/clr">CLR</a></li>
+				<li class="pure-menu-item"><a class="pure-menu-link" href="/admin/commands">Commands</a></li>
 			</ul>        
 		</li>
   </ul>
   <div id="right">
-    <a class="btn btn-default" id="loginBtn" href="/auth/twitch">Login</a>
-	  <input id="searchBar" type="text" class="form-control" placeholder="Username">
+		<input id="searchBar" type="text" class="form-control" placeholder="Username">
+		{{ if not $.Values.username }}			
+    	<a class="btn btn-default" id="loginBtn" href="/auth/twitch">Login</a>
+		{{ else }}
+			<div id="fullProfile">
+				<div class="pure-menu-link long" id="name">Profile <i class="fa fa-caret-down" aria-hidden="true"></i></div>
+			</div>
+			<div class="profile hidden text-left">
+				<p id="menu">
+					<img src="{{ .Values.profile_pic }}" class="img-circle pf" id="{{ .Values.username	 }}" width="65" height="65">
+					<u>Hey there {{ .Values.displayName }}!</u><br>
+					<a href='/user/{{ .Values.username }}'>User page</a> <span class="profLeft">Points: {{ .Values.points }}</span><br>
+					<a href='/logout'>Logout</a> <span class="profLeft">Lines: {{ .Values.lines }}</span>
+				</p>
+			</div>
+		{{ end }}
    </div>
 </div>
  {{template "content" .}}
