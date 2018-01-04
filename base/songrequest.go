@@ -70,6 +70,30 @@ func (b *Bot) Songrequest(C string, U User) {
       b.ExecuteCommand(C, "150", "0", "10", U, exec)
     }
   }
+  if C == "!np" || C == "!currentsong" {
+    exec := func() {  
+      var db = Conn()
+      res, err := db.Query("select name, title from songrequest where DATE(time) = CURDATE() AND playState = 0")
+      if err != nil {
+        panic(err.Error())
+      }
+      defer res.Close()
+      
+      var names []string
+      var titles []string
+      
+      for res.Next() {
+        var name string
+        var title string
+        err = res.Scan(&name, &title)
+        names = append(names, name)
+        titles = append(titles, title)
+      }
+      if titles == nil { b.SendMsg(`There's no song currently playing :/`); return}
+      b.SendMsg(`The current song is "`+titles[0]+`", requested by "`+names[0]+`"`)
+    }
+    b.ExecuteCommand(C, "100", "0", "10", U, exec)
+  }
 }
 
 type SongInfo struct {

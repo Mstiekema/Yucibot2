@@ -13,6 +13,7 @@ twitter_consumer_key = "somekey"
 twitter_consumer_secret = "somekey"
 twitter_access_token_key = "somekey"
 twitter_access_token_secret = "somekey"
+secretCookieKey = "somekey"
 
 [mysql]
 username = "root"

@@ -2,13 +2,11 @@ package webmods
 
 import (
   "strings"
-  "html/template"
   "time"
   "fmt"
   "strconv"
   "encoding/json"
   "net/http"
-  "log"
   
   "github.com/gorilla/mux"
   "github.com/gorilla/websocket"
@@ -107,7 +105,8 @@ func AdminSonglist(w http.ResponseWriter, r *http.Request) {
   }
   
   if lvl < 200 {
-    LoadPage(w, r, "./web/templates/401.html", nil) 
+    LoadPage(w, r, "./web/templates/401.html", nil)
+    return
   }
   
   LoadPage(w, r, "./web/templates/adminSonglist.html", nil) 
