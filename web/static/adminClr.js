@@ -1,4 +1,4 @@
-var socket = new WebSocket("ws://localhost:9090/post/adminClr/")
+var socket = new WebSocket("ws://"+window.location.href.split("/")[2]+"/post/adminClr/")
 var soundEl = document.querySelectorAll('.sound');
 var button = document.querySelectorAll('button');
 var popup = document.getElementById('showBox');
