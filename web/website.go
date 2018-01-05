@@ -42,6 +42,7 @@ func MainWeb() {
   go hub.Run()
   
   r.HandleFunc("/post/getSongs/", webmods.SendSongs)
+  r.HandleFunc("/post/adminClr/", func(w http.ResponseWriter, r *http.Request) {webmods.PostAdminClr(hub, w, r)})
   r.HandleFunc("/post/getCLR/", func(w http.ResponseWriter, r *http.Request) {webmods.SendCLR(hub, w, r)})
   
   http.ListenAndServe(":9090", r)

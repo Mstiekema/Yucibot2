@@ -1,5 +1,59 @@
 {{define "content"}}
 <div class="main">
 <h2>CLR Management</h2>
+
+<h4>Meme button</h4>
+<button class="btn btn-danger memes">Random meme</button><br><br>
+
+<h4>Add own samples</h4>
+<form class="pure-form pure-form-aligned">
+<div class="pure-control-group">Name: <input disabled type="text" id="id"> <small>No spaces, caps etc.</small><br></div>
+<div class="pure-control-group">Sample url: <input disabled type="text" id="url"> <small>i.e. puush url, must be .mp4, .mp3 or .gif</small><br></div>
+<div class="pure-control-group">Type: 
+<select disabled id="type">
+  <option value="sound">Sound</option>
+  <option value="gif">GIF</option>
+  <option value="meme">Meme</option>
+</select><br></div></form>
+<i>Will be re-added soon</i><br>
+<button disabled class="btn btn-primary submitNewSample">Submit</button><br><br>
+
+<h3>Manage samples</h3>
+
+<table align="center" class="table table-hover">
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Test</th>
+    <th>Send</th>
+    <th>Delete</th>
+  </tr>
+  {{ range $i, $j := .Values.Info.id }}
+    <tr>
+      <td>{{ index $.Values.Info.name $i}}</td>
+      <td>{{ index $.Values.Info.type $i}}</td>
+      <td><button class="btn btn-success clrSamples {{ index $.Values.Info.type $i}}" id="{{ index $.Values.Info.url $i}}">Test sample</button></td>
+      <td>
+        {{ with $x := index $.Values.Info.type $i }}
+        {{ if eq $x "meme" }} <button class="btn btn-danger forceMeme" id="{{ index $.Values.Info.name $i}}">Send to stream</button> {{ end }}
+        {{ if eq $x "sound" }} <button class="btn btn-danger forceSound" id="{{ index $.Values.Info.name $i}}">Send to stream</button> {{ end }}
+        {{ end }}
+      </td>
+      <td><button class="btn btn-warning rem {{ index $.Values.Info.id $i}}" id="{{ index $.Values.Info.name $i}}">Remove</button></td>
+    </tr>
+  {{ end }}
+</table>
 </div>
+<div id="showBox">
+  <div id="showStuff">
+    <div class="modal-header">
+      <button type="button" class="close" id="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h4 id="modalTitle">CLR sample preview</h4>
+    </div>
+    <div id="gifSpot"></div>
+    <div id="showText"></div>
+  </div>
+</div>
+</div>
+<script type="text/javascript" src="/../static/adminClr.js"></script>
 {{end}}
