@@ -56,6 +56,7 @@ func (b *Bot) CustomCommands(C string, U User) {
       b.ExecuteCommand(C, level, points, cd, U, exec)    
     }
   }
+  db.Close()
 }
 
 var uCooldowns []string

@@ -31,20 +31,24 @@ func Query(qry string) (result string) {
 		panic(err.Error())
 	}
   stmtOut.QueryRow().Scan(&result)
+  db.Close()
   return
 }
 
 func Update(tbl, row, name, where string) {
   var db = Conn()
   db.Exec("UPDATE "+tbl+" SET "+row+" WHERE "+name+" = "+where)
+  db.Close()
 }
 
 func Delete(tbl, row, where string) {
   var db = Conn()
   db.Exec("DELETE FROM "+tbl+" WHERE "+row+" = '"+where+"'")
+  db.Close()
 }
 
 func Insert(tbl, set string) {
   var db = Conn()
   db.Exec("INSERT INTO "+tbl+" VALUES "+set)
+  db.Close()
 }

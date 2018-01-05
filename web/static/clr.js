@@ -1,5 +1,5 @@
 window.onload = function () {
-  var conn = new ReconnectingWebSocket("ws://localhost:9090/post/getCLR/", null, {debug: true, reconnectInterval: 3000});
+  var conn = new ReconnectingWebSocket("ws://"+window.location.href.split("/")[2]+"/post/getCLR/", null, {debug: true, reconnectInterval: 3000});
   conn.onopen = function(e) {
     console.log("Connected forsenE")
   }

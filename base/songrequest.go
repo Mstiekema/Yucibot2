@@ -91,6 +91,7 @@ func (b *Bot) Songrequest(C string, U User) {
       }
       if titles == nil { b.SendMsg(`There's no song currently playing :/`); return}
       b.SendMsg(`The current song is "`+titles[0]+`", requested by "`+names[0]+`"`)
+      db.Close()
     }
     b.ExecuteCommand(C, "100", "0", "10", U, exec)
   }
@@ -148,7 +149,8 @@ func (b *Bot) getLinkInfo(L, C string, U User) {
     } else {
       Insert("songrequest (title, thumb, name, length, songid)", "('"+vid.Items[0].Snippet.Title+"', '" +vid.Items[0].Snippet.Thumbnails.Default.Url+"', '"+U.displayName+"', '"+time+"', '"+L+"')")
       b.SendMsg("Added "+vid.Items[0].Snippet.Title+" to the queue. Song requested by "+U.displayName)
-    }  
+    }
+    db.Close()
   } else {
     b.SendMsg(U.displayName+", couldn't find a song with this name :/")
   }

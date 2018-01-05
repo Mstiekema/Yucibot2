@@ -2,11 +2,10 @@ var conn;
 var player;
 var vids = new Array;
 vids.Length = 0
-
-// Ready the Sockets
 conn = initWS();
+
 function initWS() {
-  var socket = new WebSocket("ws://localhost:9090/post/getSongs/")
+  var socket = new WebSocket("ws://"+window.location.href.split("/")[2]+"/post/getSongs/")
   socket.onopen = function (e) {
     conn.send("refreshData");
   };
@@ -39,13 +38,6 @@ function initWS() {
   return socket;
 }
 
-// Get new songs (test)
-$("#sendBtn").click(function (e) {
-  e.preventDefault();
-  conn.send("refreshData");
-});
-
-// Ready player
 var tag = document.createElement('script');
 tag.src = "https://www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -65,7 +57,6 @@ function onYouTubeIframeAPIReady() {
   }, 500);
 }
 
-// Functions for if something happens on the page
 function onPlayerReady(event) {
   event.target.playVideo();
 }
@@ -100,7 +91,6 @@ var getSongName = setInterval(function () {
 	$("#videoTitle").html("<b>Current song</b>: " + vids.CurrSongT + "<br>" + "<b>Requested by</b>: " + vids.CurrSongN);
 }, 5000);
 
-// Angular shit
 var yucibot = angular.module('yucibot', [], function($interpolateProvider) {
     $interpolateProvider.startSymbol('*-');
     $interpolateProvider.endSymbol('-*');

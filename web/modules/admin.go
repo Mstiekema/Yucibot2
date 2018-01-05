@@ -10,8 +10,6 @@ import (
   "github.com/Mstiekema/Yucibot2/base"
 )
 
-var db = base.Conn()
-
 func AdminSonglist(w http.ResponseWriter, r *http.Request) {
   LoadAdminPage(w, r, "./web/templates/admin/songlist.html", nil) 
 }
@@ -25,6 +23,7 @@ func AdminCommands(w http.ResponseWriter, r *http.Request){
 }
 
 func AdminClr(w http.ResponseWriter, r *http.Request) {
+  db := base.Conn()
   res, err := db.Query("SELECT id, name, url, type FROM clr")
   if err != nil {
     panic(err.Error())
@@ -52,7 +51,7 @@ func AdminClr(w http.ResponseWriter, r *http.Request) {
     "url": urls,
     "type": types,
   }
-  
+  db.Close()
   LoadAdminPage(w, r, "./web/templates/admin/clr.html", clr)
 }
 
@@ -71,6 +70,7 @@ func PostAdminClr(hub *Hub, w http.ResponseWriter, r *http.Request) {
     msg := string(bMsg)
     
     if msg == "meme" {
+      db := base.Conn()
       res, err := db.Query(`SELECT url FROM clr where type = "meme"`)
       if err != nil { panic(err.Error()) }
       defer res.Close()
@@ -82,15 +82,19 @@ func PostAdminClr(hub *Hub, w http.ResponseWriter, r *http.Request) {
         urls = append(urls, url)
       }
       if err := conn.WriteMessage(websocket.TextMessage, []byte(`{"type": "meme", "meme": "`+urls[rand.Intn(len(urls))]+`"}`)); err != nil {fmt.Println(err);return}
+      db.Close()
     } else if strings.Contains(msg, "forceMeme|") {
+      db := base.Conn()
       name := strings.SplitAfter(msg, "forceMeme|")[1]
       meme := base.Query(`SELECT url FROM clr where name = "`+name+`"`)
       if err := conn.WriteMessage(websocket.TextMessage, []byte(`{"type": "meme", "meme": "`+meme+`"}`)); err != nil {fmt.Println(err);return}
+      db.Close()
     } else if strings.Contains(msg, "forceSound|") {
+      db := base.Conn()
       name := strings.SplitAfter(msg, "forceSound|")[1]
       url := base.Query(`SELECT url FROM clr where name = "`+name+`"`)
-      fmt.Println(url)
       if err := conn.WriteMessage(websocket.TextMessage, []byte(`{"type": "sound", "sound": "`+name+`", "url": "`+url+`"}`)); err != nil {fmt.Println(err);return}
+      db.Close()
     } else if strings.Contains(msg, "removeCLR|") {
       id := strings.SplitAfter(msg, "removeCLR|")[1]
       base.Delete("clr", "id", id)
