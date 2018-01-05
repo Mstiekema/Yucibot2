@@ -1,6 +1,7 @@
 package base
 
 import (
+  "fmt"
   "net/http"
   "io/ioutil"
   "encoding/json"
@@ -48,7 +49,11 @@ func (b *Bot) UserInfoComms(C string, U User) {
 func (b *Bot) CustomCommands(C string, U User) {
   var db = Conn()
   var response, level, points, cd string
-  res, _ := db.Query(`SELECT response, level, points, cd FROM commands WHERE commDesc IS NULL AND commName = "`+C+`"`)
+  res, err := db.Query(`SELECT response, level, points, cd FROM commands WHERE commDesc IS NULL AND commName = "`+C+`"`)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
   for res.Next() {
     res.Scan(&response, &level, &points, &cd)
     if response != "" {

@@ -1,8 +1,8 @@
 package base
 
 import (
-  "net/url"
   "strings"
+  "mvdan.cc/xurls"
   "time"
 )
 
@@ -22,13 +22,11 @@ func (b *Bot) Links(U User) {
     c = U.message
   }
   
-  if  strings.ToLower(allowedUser) != U.username { if U.sub != "true" { if U.mod != "true" {
-    for i := 0; i < len(msgSplit); i++ {
-      _, err := url.ParseRequestURI(msgSplit[i])
-      if err == nil {
-        b.SendMsg(`.timeout `+U.username+` 30 Only subs are allowed to post links`)
-        return
-      }
+  if strings.ToLower(allowedUser) != U.username { if U.sub != "1" { if U.mod != "1" {
+    url := xurls.Relaxed().FindString(U.message)
+    if url != "" {
+      b.SendMsg(`.timeout `+U.username+` 30 Only subs are allowed to post links`)
+      return
     }
   }}}
   
