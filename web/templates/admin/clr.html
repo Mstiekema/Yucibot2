@@ -30,8 +30,8 @@
   </tr>
   {{ range $i, $j := .Values.Info.id }}
     <tr>
-      <td>{{ index $.Values.Info.name $i}}</td>
-      <td>{{ index $.Values.Info.type $i}}</td>
+      <td>{{ index $.Values.Info.name $i }}</td>
+      <td>{{ index $.Values.Info.type $i }}</td>
       <td><button class="btn btn-success clrSamples {{ index $.Values.Info.type $i}}" id="{{ index $.Values.Info.url $i}}">Test sample</button></td>
       <td>
         {{ with $x := index $.Values.Info.type $i }}

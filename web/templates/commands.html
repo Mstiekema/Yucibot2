@@ -1,8 +1,73 @@
 {{define "content"}}
 <div class="main">
 <h2>Commands</h2>
-<p>
-  Here you can find all of the commands for Yucibot.<br>
-</p>
+
+<button class="pure-button commBtn switchButton" id="switchPageE">Everyone</button>
+<button class="pure-button commBtn switchButton "id="switchPageP">Points</button>
+<button class="pure-button commBtn switchButton" id="switchPageS">Sub</button>
+<button class="pure-button commBtn switchButton "id="switchPageM">Mod</button>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Usage</th>
+      <th>Reply</th>
+      <th>More info</th>
+    </tr>
+  </thead>
+  <tbody>
+  <script>console.log({{.Values.Info}})</script>
+  {{ range $i, $j := .Values.Info.level }}
+    {{ with $x := index $.Values.Info.level $i }}{{ with $y := index $.Values.Info.points $i }}
+      {{ if ne $y "0" }}
+        <tr class="commands pointCommands">
+          <td>{{ index $.Values.Info.commName $i }}</td>
+          <td>{{ index $.Values.Info.commDesc $i }} {{ index $.Values.Info.response $i }} | <b>Cost:</b> {{ index $.Values.Info.points $i }} points</td>
+          <td><button class="pure-button commDetails" id="{{ index $.Values.Info.commName $i }}">More details</button></td>
+        </tr>
+      {{ else if eq $x "100" }}
+        <tr class="commands allCommands">
+          <td>{{ index $.Values.Info.commName $i }}</td>
+          <td>{{ index $.Values.Info.commDesc $i }} {{ index $.Values.Info.response $i }}
+          <td><button class="pure-button commDetails" id="{{ index $.Values.Info.commName $i }}">More details</button></td>
+        </tr>
+      {{ else if eq $x "300" }}
+        <tr class="commands modCommands">
+          <td>{{ index $.Values.Info.commName $i }}</td>
+          <td>{{ index $.Values.Info.commDesc $i }} {{ index $.Values.Info.response $i }}
+          <td><button class="pure-button commDetails" id="{{ index $.Values.Info.commName $i }}">More details</button></td>
+        </tr>
+      {{ else if eq $x "150" }}
+        <tr class="commands subCommands">
+          <td>{{ index $.Values.Info.commName $i }}</td>
+          <td>{{ index $.Values.Info.commDesc $i }} {{ index $.Values.Info.response $i }}
+          <td><button class="pure-button commDetails" id="{{ index $.Values.Info.commName $i }}">More details</button></td>
+        </tr>
+      {{ end }}
+    {{ end }}{{ end }}
+  {{ end }}
+  </tbody>
+</table>
+
+<div id="showBox">
+  <div id="showComms">
+    <div class="modal-header">
+      <button type="button" class="close" id="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <h4 id="modalTitle">Command details</h4>
+    </div>
+    {{ range $i, $j := .Values.Info.level }}
+    <div class="commText hidden" id="{{ index $.Values.Info.commName $i }}Modal">
+      <b>Command:</b> {{ index $.Values.Info.commName $i }} <br>
+      <b>Description:</b> {{ index $.Values.Info.commDesc $i }} <br>
+      <b>Response:</b> {{ index $.Values.Info.response $i }} <br>
+      <b>Usage:</b> {{ index $.Values.Info.commUse $i }} <br>
+      <b>Cooldown:</b> {{ index $.Values.Info.cd $i }} seconds <br>
+      <b>User level:</b> {{ index $.Values.Info.level $i }} <br>
+      <b>Point cost:</b> {{ index $.Values.Info.points $i }} <br>
+    </div>
+    {{ end }}
+  </div>
 </div>
+</div>
+<script type="text/javascript" src="../static/commands.js"></script>
 {{end}}

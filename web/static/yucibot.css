@@ -96,6 +96,12 @@
   cursor: pointer;
 }
 
+/* Commands CSS */
+.commText {
+  padding: 10px;
+}
+
+
 /* Songlist CSS */
 .songlistDiv {
   position: relative;
