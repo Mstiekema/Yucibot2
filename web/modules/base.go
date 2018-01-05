@@ -5,6 +5,7 @@ import (
   "net/http"
   "log"
   "github.com/markbates/goth/gothic"
+  "github.com/Mstiekema/Yucibot2/base"
 )
 
 func Home(w http.ResponseWriter, r *http.Request){
@@ -12,6 +13,7 @@ func Home(w http.ResponseWriter, r *http.Request){
 }
 
 func Commands(w http.ResponseWriter, r *http.Request){
+  db := base.Conn()
   res, err := db.Query("SELECT level, commName, COALESCE(commDesc, '') as commDesc, COALESCE(commUse, '') as commUse, COALESCE(response, '') as response, points, cd FROM commands")
   if err != nil {
     panic(err.Error())
@@ -51,7 +53,7 @@ func Commands(w http.ResponseWriter, r *http.Request){
     "points": pointss,
     "cd": cds,
   }
-  
+  db.Close()
   LoadPage(w, r, "./web/templates/commands.html", commands)
 }
 
