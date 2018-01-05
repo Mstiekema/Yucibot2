@@ -63,8 +63,9 @@ func PostAdminClr(hub *Hub, w http.ResponseWriter, r *http.Request) {
   if err != nil {
     http.Error(w, "Could not open websocket connection", http.StatusBadRequest)
   }
+  
   for {
-    conn, _, err := websocket.DefaultDialer.Dial("ws://localhost:9090/post/getCLR/", nil)
+    conn, _, err := websocket.DefaultDialer.Dial("ws://"+r.Host+"/post/getCLR/", nil)
     _, bMsg, err := read.ReadMessage()
     if err != nil { fmt.Println(err); return }
     msg := string(bMsg)

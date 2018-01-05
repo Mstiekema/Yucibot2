@@ -23,7 +23,7 @@ func (b *Bot) Clr(C string, U User) {
     } else if clrType == "emote" {
       url := Query("SELECT url FROM emotes WHERE name = '"+name+"'")
       if url == "" {
-        b.SendMsg(U.displayName+" this isn't an existing emote")
+        b.SendWhisper("This isn't an existing emote", U.username)
       } else {
         exec := func() {
           sendM := []byte(`{"type": "emote", "emote": "`+name+`", "url": "`+url+`"}`)
@@ -35,7 +35,7 @@ func (b *Bot) Clr(C string, U User) {
     } else if clrType == "sound" {
       url := Query("SELECT url FROM clr WHERE type = 'sound' AND name = '"+name+"'")
       if url == "" {
-        b.SendMsg(U.displayName+" this isn't an existing sound")
+        b.SendWhisper("This isn't an existing sound", U.username)
       } else {
         exec := func() {
           sendM := []byte(`{"type": "sound", "sound": "`+name+`", "url": "`+url+`"}`)
@@ -47,7 +47,7 @@ func (b *Bot) Clr(C string, U User) {
     } else if clrType == "gif" {
       url := Query("SELECT url FROM clr WHERE type = 'gif' AND name = '"+name+"'")
       if url == "" {
-        b.SendMsg(U.displayName+" this isn't an existing GIF")
+        b.SendWhisper("This isn't an existing GIF", U.username)
       } else {
         exec := func() {
           sendM := []byte(`{"type": "gif", "gif": "`+name+`", "url": "`+url+`"}`)
@@ -59,7 +59,7 @@ func (b *Bot) Clr(C string, U User) {
     } else if clrType == "meme" {
       meme := Query("SELECT url FROM clr WHERE name = '"+name+"'")
       if meme == "" {
-        b.SendMsg(U.displayName+" this isn't an existing meme")
+        b.SendWhisper("This isn't an existing meme", U.username)
       } else {
         exec := func() {
           sendM := []byte(`{"type": "meme", "meme": "`+meme+`"}`)
@@ -69,7 +69,7 @@ func (b *Bot) Clr(C string, U User) {
         b.ExecuteCommand(C, "100", "2000", "30", U, exec)
       }
     } else {
-      b.SendMsg(U.displayName+" this isn't an existing CLR command")
+      b.SendWhisper("This isn't an existing CLR command", U.username)
     }
   }
   if U.message == "!clr meme" {

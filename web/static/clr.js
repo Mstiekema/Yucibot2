@@ -15,7 +15,7 @@ window.onload = function () {
       src.setAttribute("src", data.meme)
       video.load();
       video.play();
-      video.volume = 0.5;
+      video.volume = 0.2;
       $(video).fadeIn(100);
       document.getElementsByTagName('video')[0].addEventListener('ended', function() {$("#meme").fadeOut(500);})
     } else if (data.type == "message") {
@@ -32,14 +32,16 @@ window.onload = function () {
     } else if (data.type == "emote") {
       console.log("Showed emote: " + data.emote)
       var id = "id" + (String(Math.floor(Math.random() * 1000000)))
-      function getX() { return Math.floor(Math.random() * ($(window).width() - 300)) }
-      function getY() { return Math.floor(Math.random() * $(window).height()) }
       $("body").append("<img id="+id+" src="+data.url+"><br>")
       $("#" + id).hide()
-      $("#" + id).fadeIn(1000)
-      document.getElementById(id).style.position = "absolute"
-      document.getElementById(id).style.left = getX()
-      document.getElementById(id).style.top = getY()
+      var posx = (Math.random() * ($(document).width() - 300)).toFixed();
+      var posy = (Math.random() * ($(document).height() - 300)).toFixed();
+      $("#" + id).css({
+        'position':'absolute',
+        'left':posx+'px',
+        'top':posy+'px',
+        'display':'none'
+      }).appendTo('body').fadeIn(1000)
       setTimeout(function () { $("#" + id).fadeOut(1000); }, 5000);
       setTimeout(function () { document.getElementById(id).remove() }, 6000);
     } else if (data.type == "sound") {
