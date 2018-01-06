@@ -40,7 +40,7 @@ func (b *Bot) Links(U User) {
 }
 
 func (b *Bot) ModifyCommands(C string, U User) {
-  if U.mod == "true" || U.username == strings.ToLower(b.Channel) {
+  if U.mod == "1" || U.username == strings.ToLower(b.Channel) {
     split := strings.SplitAfter(U.message, " ")
     if C == "!addcom" || C == "!addcommand" {
       if 2 < len(strings.SplitAfter(U.message, " ")) {

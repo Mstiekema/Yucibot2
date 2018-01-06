@@ -11,7 +11,7 @@ var participants []User
 var rafState = false
 
 func (b *Bot) Raffle(C string, U User) {
-  if C == "!raffle" {
+  if C == "!raffle" { if U.mod == "1" || U.username == strings.ToLower(b.Channel) {
     var dur int
     var points int
     if 2 < len(strings.SplitAfter(U.message, " ")) {
@@ -25,8 +25,8 @@ func (b *Bot) Raffle(C string, U User) {
       dur = 30
     }
     b.StartRaffle(float64(dur), points, false)
-  }
-  if C == "!multiraffle" {
+  }}
+  if C == "!multiraffle" { if U.mod == "1" || U.username == strings.ToLower(b.Channel) {
     var dur int
     var points int
 
@@ -41,7 +41,7 @@ func (b *Bot) Raffle(C string, U User) {
       dur = 30
     }
     b.StartRaffle(float64(dur), points, true)
-  }
+  }}
   if C == "!join" && rafState == true {
     for _, usr := range participants {
       if usr == U {
