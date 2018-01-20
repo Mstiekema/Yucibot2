@@ -72,7 +72,7 @@ func (b *Bot) Clr(C string, U User) {
       b.SendWhisper("This isn't an existing CLR command", U.username)
     }
   }
-  if U.message == "!clr meme" {
+  if U.message == "!clr meme" || U.message == "!sendmeme" {
     exec := func() {
       db := Conn()
       res, err := db.Query(`SELECT url FROM clr where type = "meme"`)
