@@ -8,7 +8,9 @@ import (
 )
 
 var participants []User
+var toBeNuked []User
 var rafState = false
+var nukeState = false
 
 func (b *Bot) Raffle(C string, U User) {
   if C == "!raffle" { if U.mod == "1" || U.username == strings.ToLower(b.Channel) {
@@ -133,7 +135,15 @@ func (b *Bot) Pickpocket(C string, U User) {
     i := 1
     if  (i >= 1 && i < len(strings.SplitAfter(U.message, " "))) {
       exec := func() {
-        target := strings.ToLower(msgSplit[1])
+        target := strings.Trim(strings.ToLower(msgSplit[1]), "@")
+        if Query("SELECT pickP FROM user WHERE name = '"+U.username+"'") == "0" { 
+          b.SendWhisper("You have disabled pickpocketing, so you can't steal points. Use !resumepp to start pickpocketing again.", U.username)
+          return
+        }
+        if Query("SELECT pickP FROM user WHERE name = '"+target+"'") == "0" { 
+          b.SendWhisper("Your target has disabled pickpocketing, so you can't steal points.", U.username)
+          return
+        }
         uPoints := Query("SELECT points FROM user WHERE name = '"+U.username+"'")
         tPoints := Query("SELECT points FROM user WHERE name = '"+target+"'")
         fuPoints, _ := strconv.ParseFloat(uPoints, 64)
@@ -186,6 +196,35 @@ func (b *Bot) Pickpocket(C string, U User) {
     } else {
       b.SendWhisper("Invalid pickpocket command", U.username)
     }
+  }
+}
+
+func (b *Bot) Nuke(C string, U User, msg string) {
+  if nukeState == false && C == "!nuke" { if U.mod == "1" || U.username == strings.ToLower(b.Channel) {
+    dur := float64(15)
+    nukeState = true
+    
+    b.SendMsg("A nuke has been been launched, please take cover and don't talk in chat or else you'll be caught in the blast ANELE You have "+strconv.Itoa(int(dur))+" seconds to hide monkaS")
+    time.AfterFunc(time.Duration(int(dur*0.33)) * time.Second, func() {b.SendMsg("Hurry up! You still have "+strconv.Itoa(int(dur*0.66))+" seconds left to hide monkaS")})
+    time.AfterFunc(time.Duration(int(dur*0.66)) * time.Second, func() {b.SendMsg("Hurry up! You still have "+strconv.Itoa(int(dur*0.33))+" seconds left to hide monkaS")})
+    time.AfterFunc(time.Duration(dur) * time.Second, func() {
+      nukeState = false
+      if len(toBeNuked) == 0 {b.SendMsg("The nuke has landed! Everyone hid, so no one got hurt! PogChamp"); return}
+      b.SendMsg("The nuke has landed! "+strconv.Itoa(len(toBeNuked))+" users didn't hide and will be nuked ANELE")
+      for i, _ := range toBeNuked {
+        b.SendMsg(`.timeout `+toBeNuked[i].username+` 5 You didn't hide, so you got nuked`)
+      }
+      toBeNuked = toBeNuked[:0]
+    })
+  }}
+  if nukeState == true {
+    if U.mod == "1" || U.username == strings.ToLower(b.Channel) {return}
+    for _, usr := range toBeNuked {
+      if usr.username == U.username {
+        return
+      }
+    }
+    toBeNuked = append(toBeNuked, U)
   }
 }
 

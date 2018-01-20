@@ -91,9 +91,6 @@ func (b *Bot) ParseMsg(m string) {
     User.message = msg
     User.mod = strings.SplitAfter(m, ";")[5][4:len(strings.SplitAfter(m, ";")[5])-1]
     User.sub = strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "subscriber=")[1], ";")[0], ";")
-
-    b.UpdateLines(User)
-    b.Links(User)
     
     var comm string
     i := 1
@@ -102,6 +99,11 @@ func (b *Bot) ParseMsg(m string) {
     } else {
       comm = msg
     }
+    
+    b.UpdateLines(User)
+    b.Links(User)
+    b.Nuke(comm, User, msg)
+    
     if strings.HasPrefix(msg, "!") == false {return}
     b.Modules(comm, User)
   }
