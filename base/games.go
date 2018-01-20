@@ -28,7 +28,7 @@ func (b *Bot) Raffle(C string, U User) {
     }
     b.StartRaffle(float64(dur), points, false)
   }}
-  if C == "!multiraffle" { if U.mod == "1" || U.username == strings.ToLower(b.Channel) {
+  if C == "!multiraffle" || C == "!mraffle" { if U.mod == "1" || U.username == strings.ToLower(b.Channel) {
     var dur int
     var points int
 
@@ -244,15 +244,13 @@ func (b *Bot) StartRaffle(dur float64, points int, multi bool) {
       winners := ""
       winP := int((rand.Float64() * float64(len(participants)) / 100) * ((rand.Float64() * 25) + 5)) + 1
       wPoints := points / winP
+      for i := range participants {
+        j := rand.Intn(i + 1)
+        participants[i], participants[j] = participants[j], participants[i]
+      }
       for i := 0; i < winP; i++ {
-        j := int(rand.Float64() * float64(len(participants)))
-        winners = winners + " " + participants[j].displayName
-        Update("user", "points = points + '"+strconv.Itoa(wPoints)+"'", "name", "'"+participants[j].username+"'")
-        for i, v := range participants {
-          if v == participants[j] {
-            participants = append(participants[:i], participants[i+1:]...)
-          }
-        }
+        winners = winners + " " + participants[i].displayName
+        Update("user", "points = points + '"+strconv.Itoa(wPoints)+"'", "name", "'"+participants[i].username+"'")
       }
       b.SendMsg("The raffle has finished! "+strconv.Itoa(winP)+" users have won "+strconv.Itoa(wPoints)+" points each! The winners are:"+winners+" PogChamp")
     } else {
