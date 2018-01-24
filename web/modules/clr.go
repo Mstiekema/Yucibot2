@@ -3,7 +3,7 @@ package webmods
 import (
   "html/template"
   "net/http"
-  "log"
+  // "log"
   "fmt"
   "time"
   "github.com/gorilla/websocket"
@@ -77,7 +77,8 @@ func (c *Client) readPump() {
 		_, message, err := c.conn.ReadMessage()
     if err != nil {
       if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
-        log.Printf("error: %v", err)
+        return
+        // log.Printf("error: %v", err)
       }
       break
     }

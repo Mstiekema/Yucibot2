@@ -2,9 +2,10 @@ package webmods
 
 import (
   "fmt"
-  "strings"
   "net/http"
   "math/rand"
+  "io/ioutil"
+  "encoding/json"
   "github.com/gorilla/websocket"
   "github.com/markbates/goth/gothic"
   "github.com/Mstiekema/Yucibot2/base"
@@ -55,53 +56,52 @@ func AdminClr(w http.ResponseWriter, r *http.Request) {
   LoadAdminPage(w, r, "./web/templates/admin/clr.html", clr)
 }
 
-func PostAdminClr(hub *Hub, w http.ResponseWriter, r *http.Request) {
-  read, err := websocket.Upgrade(w, r, w.Header(), 1024, 1024)
-  client := &Client{hub: hub, conn: read, send: make(chan []byte, 256)}
-  client.hub.register <- client
+func PostAdminClr(w http.ResponseWriter, r *http.Request) {
+  body, err := ioutil.ReadAll(r.Body)
+  if err != nil { http.Error(w, "Something went wrong while trying to do your meme request", http.StatusBadRequest); panic(err) }
+  var n map[string]interface{}
+  if err := json.Unmarshal([]byte(body), &n); err != nil { fmt.Fprintf(w, "Something went wrong while trying to do your meme request"); panic(err) }
   
-  if err != nil {
-    http.Error(w, "Could not open websocket connection", http.StatusBadRequest)
-  }
-  
-  for {
+  if n["clrType"] == "meme" {
+    db := base.Conn()
     conn, _, err := websocket.DefaultDialer.Dial("ws://"+r.Host+"/post/getCLR/", nil)
-    _, bMsg, err := read.ReadMessage()
-    if err != nil { fmt.Println(err); return }
-    msg := string(bMsg)
-    
-    if msg == "meme" {
-      db := base.Conn()
-      res, err := db.Query(`SELECT url FROM clr where type = "meme"`)
-      if err != nil { panic(err.Error()) }
-      defer res.Close()
-      
-      var urls []string
-      for res.Next() {
-        var url string
-        err = res.Scan(&url)
-        urls = append(urls, url)
-      }
-      if err := conn.WriteMessage(websocket.TextMessage, []byte(`{"type": "meme", "meme": "`+urls[rand.Intn(len(urls))]+`"}`)); err != nil {fmt.Println(err);return}
-      db.Close()
-    } else if strings.Contains(msg, "forceMeme|") {
-      db := base.Conn()
-      name := strings.SplitAfter(msg, "forceMeme|")[1]
-      meme := base.Query(`SELECT url FROM clr where name = "`+name+`"`)
-      if err := conn.WriteMessage(websocket.TextMessage, []byte(`{"type": "meme", "meme": "`+meme+`"}`)); err != nil {fmt.Println(err);return}
-      db.Close()
-    } else if strings.Contains(msg, "forceSound|") {
-      db := base.Conn()
-      name := strings.SplitAfter(msg, "forceSound|")[1]
-      url := base.Query(`SELECT url FROM clr where name = "`+name+`"`)
-      if err := conn.WriteMessage(websocket.TextMessage, []byte(`{"type": "sound", "sound": "`+name+`", "url": "`+url+`"}`)); err != nil {fmt.Println(err);return}
-      db.Close()
-    } else if strings.Contains(msg, "removeCLR|") {
-      id := strings.SplitAfter(msg, "removeCLR|")[1]
-      base.Delete("clr", "id", id)
-    } else if msg == "addSample" {
-      // WIP
+    res, err := db.Query(`SELECT url FROM clr where type = "meme"`)
+    if err != nil { panic(err.Error()) }
+    defer res.Close()
+    var urls []string
+    for res.Next() {
+      var url string
+      err = res.Scan(&url)
+      urls = append(urls, url)
     }
+    if err := conn.WriteMessage(websocket.TextMessage, []byte(`{"type": "meme", "meme": "`+urls[rand.Intn(len(urls))]+`"}`)); err != nil {fmt.Println(err);return}
+    db.Close()
+    conn.Close()
+    fmt.Fprintf(w, "Succesfully sent the random meme to the CLR browser");
+  } else if n["clrType"] == "forceMeme" {
+    db := base.Conn()
+    conn, _, err := websocket.DefaultDialer.Dial("ws://"+r.Host+"/post/getCLR/", nil)
+    if err != nil { http.Error(w, "Could not open websocket connection", http.StatusBadRequest) }
+    meme := base.Query(`SELECT url FROM clr where name = "`+n["name"].(string)+`"`)    
+    if err := conn.WriteMessage(websocket.TextMessage, []byte(`{"type": "meme", "meme": "`+meme+`"}`)); err != nil {fmt.Println(err);return}
+    db.Close()
+    conn.Close()
+    fmt.Fprintf(w, "Succesfully sent your meme to the CLR browser");
+  } else if n["clrType"] == "forceSound" {
+    db := base.Conn()
+    conn, _, err := websocket.DefaultDialer.Dial("ws://"+r.Host+"/post/getCLR/", nil)
+    if err != nil { http.Error(w, "Could not open websocket connection", http.StatusBadRequest) }
+    url :=  base.Query(`SELECT url FROM clr where name = "`+n["name"].(string)+`"`)    
+    if err := conn.WriteMessage(websocket.TextMessage, []byte(`{"type": "sound", "sound": "`+n["name"].(string)+`", "url": "`+url+`"}`)); err != nil {fmt.Println(err);return}
+    db.Close()
+    conn.Close()
+    fmt.Fprintf(w, "Succesfully sent your sound to the CLR browser");
+  } else if n["clrType"] == "removeCLR" {
+    base.Delete("clr", "id", n["name"].(string))
+    fmt.Fprintf(w, "Succesfully removed %s from the database", n["name"]);
+  } else if n["clrType"] == "addCLR" {
+    base.Insert("clr (name, url, type)", "('"+n["name"].(string)+"', '"+n["url"].(string)+"', '"+n["type"].(string)+"')")
+    fmt.Fprintf(w, "Succesfully added %s to the database", n["name"]);
   }
 }
 

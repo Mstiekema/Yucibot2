@@ -1,8 +1,6 @@
-var socket = new WebSocket("ws://"+window.location.href.split("/")[2]+"/post/adminClr/")
 var soundEl = document.querySelectorAll('.sound');
 var button = document.querySelectorAll('button');
 var popup = document.getElementById('showBox');
-// var buy = document.getElementById('buyThing');
 var close = document.getElementById('close');
 var memes = document.querySelectorAll('.memes');
 
@@ -28,45 +26,108 @@ if (close) {
   })
 }
 
-// if (buy) {
-//   buy.addEventListener('click', function() {
-//     var item = document.getElementById('gifSpot').getAttribute("class").split(" ")
-//     var user = document.getElementById('easyUsernameFetcher').innerHTML
-//     socket.send("buyCLR", {"item": item[0], "user": user, "type": item[1], url: item[2]})
-//   })
-// }
-
 if (button) {
   for (var x = 0; x < button.length; x++) {
     button[x].addEventListener('click', function() {
       var type = $(this).attr("class")
       if(this.id == "loginBtn") return
       if (type == "btn btn-danger memes") {
-        return socket.send("meme")
-      }
-      if (type.startsWith("btn btn-danger forceMeme")) {
-        return socket.send("forceMeme|"+this.id)
-      }
-      if (type.startsWith("btn btn-danger forceSound")) {
-        return socket.send("forceSound|"+this.id)
-      }
-      if (type.indexOf("btn btn-warning rem") != -1) {
+        $.ajax({
+          url: '/post/adminClr/',
+          data: JSON.stringify({
+            clrType: "meme"
+          }),
+          type: 'POST',
+          success: function (data) {
+            console.log(data)
+          },
+          error: function (xhr, status, error) {
+            console.log("Error: "+xhr.responseText)
+            // $("#notifBar").css({"background": "#f2dede", "color": "#a94442"}).fadeIn("slow").empty().append(xhr.responseText);
+            // setTimeout(function () { $("#notifBar").fadeOut("slow"); }, 5000);
+          }
+        });
+        return
+      } else if (type.startsWith("btn btn-danger forceMeme")) {
+        $.ajax({
+          url: '/post/adminClr/',
+          data: JSON.stringify({
+            clrType: "forceMeme",
+            name: this.id
+          }),
+          type: 'POST',
+          success: function (data) {
+            console.log(data)
+          },
+          error: function (xhr, status, error) {
+            console.log("Error: "+xhr.responseText)
+            // $("#notifBar").css({"background": "#f2dede", "color": "#a94442"}).fadeIn("slow").empty().append(xhr.responseText);
+            // setTimeout(function () { $("#notifBar").fadeOut("slow"); }, 5000);
+          }
+        });
+        return
+      } else if (type.startsWith("btn btn-danger forceSound")) {
+        $.ajax({
+          url: '/post/adminClr/',
+          data: JSON.stringify({
+            clrType: "forceSound",
+            name: this.id
+          }),
+          type: 'POST',
+          success: function (data) {
+            console.log(data)
+          },
+          error: function (xhr, status, error) {
+            console.log("Error: "+xhr.responseText)
+            // $("#notifBar").css({"background": "#f2dede", "color": "#a94442"}).fadeIn("slow").empty().append(xhr.responseText);
+            // setTimeout(function () { $("#notifBar").fadeOut("slow"); }, 5000);
+          }
+        });
+        return
+      } else if (type.indexOf("btn btn-warning rem") != -1) {
         var id = type.slice(19)
         var con = confirm("Are you sure you want to remove " + this.id + "?");
         if (con == true) {
-          socket.send("removeCLR|"+id)
-          window.location.reload()
+          $.ajax({
+            url: '/post/adminClr/',
+            data: JSON.stringify({
+              clrType: "removeCLR",
+              name: id
+            }),
+            type: 'POST',
+            success: function (data) {
+              console.log(data)
+              window.location.reload()
+            },
+            error: function (xhr, status, error) {
+              console.log("Error: "+xhr.responseText)
+              // $("#notifBar").css({"background": "#f2dede", "color": "#a94442"}).fadeIn("slow").empty().append(xhr.responseText);
+              // setTimeout(function () { $("#notifBar").fadeOut("slow"); }, 5000);
+            }
+          });
         }
         return
-      }
-      if (type.indexOf("submitNewSample") != -1) {
-        var newSample = {
-          name: document.getElementById('id').value,
-          url: document.getElementById('url').value,
-          type: document.getElementById('type').value
-        }      
-        socket.send('addSample', newSample)
-        return window.location.reload()
+      } else if (type.indexOf("submitNewSample") != -1) {
+        $.ajax({
+          url: '/post/adminClr/',
+          data: JSON.stringify({
+            clrType: "addCLR",
+            name: document.getElementById('id').value,
+            url: document.getElementById('url').value,
+            type: document.getElementById('type').value
+          }),
+          type: 'POST',
+          success: function (data) {
+            console.log(data)
+            window.location.reload()
+          },
+          error: function (xhr, status, error) {
+            console.log("Error: "+xhr.responseText)
+            // $("#notifBar").css({"background": "#f2dede", "color": "#a94442"}).fadeIn("slow").empty().append(xhr.responseText);
+            // setTimeout(function () { $("#notifBar").fadeOut("slow"); }, 5000);
+          }
+        });
+        return
       }
       $('#showStuff').removeClass('animated bounceOutUp');
       $('#showStuff').addClass('animated bounceInDown');
