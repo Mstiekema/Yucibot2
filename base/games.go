@@ -61,6 +61,7 @@ func (b *Bot) Roulette(C string, U User) {
     if  (i >= 1 && i < len(strings.SplitAfter(U.message, " "))) {
       StringRoulPoints := strings.TrimSpace(msgSplit[1])
       StringOldPoints := Query("SELECT points FROM user WHERE name = '"+U.username+"'")
+      if StringRoulPoints == "all" {StringRoulPoints = StringOldPoints}
       roulPoints, _ := strconv.Atoi(StringRoulPoints)
       oldPoints, _ := strconv.Atoi(StringOldPoints)
       if StringOldPoints != "" {
