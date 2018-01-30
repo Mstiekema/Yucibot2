@@ -64,16 +64,22 @@ func (b *Bot) UserInfoComms(C string, U User) {
 
 func (b *Bot) CustomCommands(C string, U User) {
   var db = Conn()
-  var response, level, points, cd string
-  res, err := db.Query(`SELECT response, level, points, cd FROM commands WHERE commDesc IS NULL AND commName = "`+C+`"`)
+  var response, commUse, level, points, cd string
+  res, err := db.Query(`SELECT response, commUse, level, points, cd FROM commands WHERE commDesc IS NULL AND commName = "`+C+`"`)
   if err != nil {
     fmt.Println(err)
     return
   }
   for res.Next() {
-    res.Scan(&response, &level, &points, &cd)
+    res.Scan(&response, &commUse, &level, &points, &cd)
     if response != "" {
-      exec := func() {b.SendMsg(response)}
+      exec := func() {
+        if strings.Contains(response, "&Count") {
+          i, _ := strconv.Atoi(commUse); i++; s := strconv.Itoa(i); Update("commands", `commUse = "`+s+`"`, "commName", "'"+C+"'")
+          response = strings.Replace(response, "&Count", s, -1)
+        }
+        b.SendMsg(response)
+      }
       b.ExecuteCommand(C, level, points, cd, U, exec)    
     }
   }
