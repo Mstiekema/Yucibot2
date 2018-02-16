@@ -81,7 +81,7 @@ func (b *Bot) ParseMsg(m string) {
     mWithUser := strings.SplitAfter(m, "PRIVMSG")[1]
     mWithUser = strings.TrimPrefix(mWithUser, " #")
     msg := strings.TrimSpace(strings.SplitAfterN(mWithUser, ":", 2)[1])
-    user := strings.SplitAfter(m, ";")[2][13:len(strings.SplitAfter(m, ";")[2])-1]
+    user := strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "display-name=")[1], ";")[0], ";")
     fmt.Println("[CHAT] " + user + ": " + msg)
     
     User := User{}
@@ -89,7 +89,7 @@ func (b *Bot) ParseMsg(m string) {
     User.displayName = user
     User.userId = strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "user-id=")[1], ";")[0], ";")
     User.message = msg
-    User.mod = strings.SplitAfter(m, ";")[5][4:len(strings.SplitAfter(m, ";")[5])-1]
+    User.mod = strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "mod=")[1], ";")[0], ";")
     User.sub = strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "subscriber=")[1], ";")[0], ";")
     
     var comm string

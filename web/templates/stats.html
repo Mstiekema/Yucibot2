@@ -1,10 +1,57 @@
 {{define "content"}}
 <div class="main">
-<h2>Stats</h2>
-<p>
-  Some nice stats about the users in chat.<br>
+  <h2 style="text-align: center;">Stats</h2>
+    
+  <div class="statBlock">
+    <h3 style="text-align: center;">Base stats</h3>
+    <p>
+      Chat has typed a <b>{{ .Values.Info.lines }}</b> lines in chat. <br>
+      A total of <b>{{ .Values.Info.userCount }}</b> users have visited the stream. <br>
+      Chat has requested <b>{{ .Values.Info.songRequests }}</b> songs during the stream. <br>
+      The mods have given <b>{{ .Values.Info.timeoutCount }}</b> a timeout in chat. <br>
+      <b>{{ .Values.Info.banCount }}</b> people have been banned from chat.
+    </p>
+  </div>
   
-  <h1>WIP</h1>
-<p>
+  <div class="statBlock">
+    <h3 style="text-align: center;">Top lines</h3>
+    <p>
+      {{ range $key, $value := .Values.Info.totalLines }}
+        #{{ add $key 1 }} {{ index $.Values.Info.nlNames $key }} - {{ $value }} lines <br>
+      {{ end }}
+    </p>
+  </div>
+  
+  <div class="statBlock">
+    <h3 style="text-align: center;">Top points</h3>
+    <p>
+      {{ range $key, $value := .Values.Info.totalPoints }}
+        #{{ add $key 1 }} {{ index $.Values.Info.pNames $key }} - {{ $value }} points <br>
+      {{ end }}
+    </p>
+  </div>
+  
+  <div class="statBlock">
+    <h3 style="text-align: center;">More coming soon</h3>
+  </div>
+  
+  <!-- <div class="statBlock">
+    <h3 style="text-align: center;">Top online</h3>
+    <p>
+      {{ range $key, $value := .Values.Info.onlineHours }}
+        #{{ add $key 1 }} {{ index $.Values.Info.onNames $key }} - {{ parseWatchTime $value }} <br>
+      {{ end }}
+    </p>
+  </div>
+  
+  <div class="statBlock">
+    <h3 style="text-align: center;">Top offline</h3>
+    <p>
+      {{ range $key, $value := .Values.Info.offlineHours }}
+        #{{ add $key 1 }} {{ index $.Values.Info.offNames $key }} - {{ parseWatchTime $value }} <br>
+      {{ end }}
+    </p>
+  </div> -->
+
 </div>
 {{end}}

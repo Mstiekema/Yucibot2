@@ -1,4 +1,8 @@
 /* General CSS */
+body {
+  background-color: #e2e2e2;
+}
+
 .main {
   margin: 20px;
 }
@@ -101,6 +105,15 @@
   padding: 10px;
 }
 
+/* Stats CSS */
+.statBlock {
+  background-color: #ffffff;
+  display: inline-block;
+  vertical-align: top;
+  padding: 10px;
+  padding-top: 0px;
+  margin: 10px;
+}
 
 /* Songlist CSS */
 .songlistDiv {
