@@ -243,7 +243,9 @@ func (b *Bot) StartRaffle(dur float64, points int, multi bool) {
     rafState = false
     if multi == true {
       winners := ""
-      winP := int((rand.Float64() * float64(len(participants)) / 100) * ((rand.Float64() * 25) + 5)) + 1
+      rand.Seed(time.Now().Unix())
+      winP := rand.Intn(7 - 2) + 2
+      if winP > len(participants) { winP = len(participants) }
       wPoints := points / winP
       for i := range participants {
         j := rand.Intn(i + 1)
