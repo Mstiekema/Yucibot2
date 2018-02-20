@@ -6,6 +6,7 @@ import (
   "encoding/json"
   "fmt"
   "time"
+  "github.com/spf13/viper"
 )
 
 type AllUsers struct {
@@ -18,7 +19,9 @@ type AllUsers struct {
 
 func (b *Bot) UpdatePoints() {
   var netClient = &http.Client{Timeout: time.Second * 10,}
-  resp, err := netClient.Get("https://tmi.twitch.tv/group/user/merijn/chatters")
+  viper.SetConfigFile("./config.toml")
+  err := viper.ReadInConfig()
+  resp, err := netClient.Get("https://tmi.twitch.tv/group/user/"+viper.GetString("twitch.channel")+"/chatters")
   if err != nil {
     fmt.Println(err)
     return
