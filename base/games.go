@@ -13,7 +13,7 @@ var rafState = false
 var nukeState = false
 
 func (b *Bot) Raffle(C string, U User) {
-  if C == "!raffle" { if U.mod == "1" || U.username == strings.ToLower(b.Channel) {
+  if C == "!raffle" && rafState == false { if U.mod == "1" || U.username == strings.ToLower(b.Channel) {
     var dur int
     var points int
     if 2 < len(strings.SplitAfter(U.message, " ")) {
@@ -28,7 +28,7 @@ func (b *Bot) Raffle(C string, U User) {
     }
     b.StartRaffle(float64(dur), points, false)
   }}
-  if C == "!multiraffle" || C == "!mraffle" { if U.mod == "1" || U.username == strings.ToLower(b.Channel) {
+  if (C == "!multiraffle" || C == "!mraffle") && rafState == false { if U.mod == "1" || U.username == strings.ToLower(b.Channel) {
     var dur int
     var points int
 
@@ -242,6 +242,7 @@ func (b *Bot) StartRaffle(dur float64, points int, multi bool) {
   time.AfterFunc(time.Duration(dur) * time.Second, func() {
     rafState = false
     if multi == true {
+      if len(participants) == 0 {b.SendMsg("No one joined the raffle DansGame"); return}
       winners := ""
       rand.Seed(time.Now().Unix())
       winP := rand.Intn(7 - 2) + 2
