@@ -114,7 +114,15 @@ func (b *Bot) ParseMsg(m string) {
       displayName := strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "display-name=")[1], ";")[0], ";")
       months := strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "msg-param-months=")[1], ";")[0], ";")
       plan := strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "msg-param-sub-plan=")[1], ";")[0], ";")
-      b.Subs(noticeType, username, displayName, months, plan)      
+      b.Subs(noticeType, username, displayName, months, plan)
+    } else if noticeType == "subgift" {
+      giftU := strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "login=")[1], ";")[0], ";")
+      giftD := strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "display-name=")[1], ";")[0], ";")
+      receiveU := strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "msg-param-recipient-user-name=")[1], ";")[0], ";")
+      receiveD := strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "msg-param-recipient-display-name=")[1], ";")[0], ";")
+      months := strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "msg-param-months=")[1], ";")[0], ";")
+      plan := strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "msg-param-sub-plan=")[1], ";")[0], ";")
+      b.Subgift(giftU, giftD, receiveU, receiveD, months, plan)
     }
   }
 }
