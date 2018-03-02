@@ -30,7 +30,7 @@ func (b *Bot) Links(U User) {
     }
   }}}
   
-  if c == "!permit" && (U.mod == "true" || U.username == strings.ToLower(b.Channel)) {
+  if c == "!permit" && (U.mod == "1" || U.username == strings.ToLower(b.Channel)) {
     allowedUser = u
     b.SendMsg(u+" is now allowed to post links for 30 seconds!")
     time.AfterFunc(30 * time.Second, func() {
