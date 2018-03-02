@@ -2,12 +2,12 @@ package base
 
 import (
   "fmt"
+  "time"
+  "strconv"
+  "strings"
   "net/http"
   "io/ioutil"
   "encoding/json"
-  "strconv"
-  "strings"
-  "time"
   "github.com/spf13/viper"
 )
 
@@ -172,7 +172,7 @@ func (b *Bot) Basic(C string, U User) {
     b.ExecuteCommand(C, "100", "0", "10", U, exec)
   } else if C == "!viewers" {
     exec := func() {
-      info := getStreamInfo(b.Channel)
+      info := b.GetStreamInfo()
       if len(info.Data) != 0 {
         b.SendMsg(b.Channel+" currently has "+strconv.Itoa(info.Data[0].ViewerCount)+" viewers")
       } else {
@@ -182,7 +182,7 @@ func (b *Bot) Basic(C string, U User) {
     b.ExecuteCommand(C, "100", "0", "10", U, exec)
   } else if C == "!title" {
     exec := func() {    
-      info := getStreamInfo(b.Channel)
+      info := b.GetStreamInfo()
       if len(info.Data) != 0 {
         b.SendMsg("Current title: "+info.Data[0].Title)
       } else {
@@ -208,10 +208,10 @@ func (b *Bot) Basic(C string, U User) {
   } 
 }
 
-func getStreamInfo(chnl string) (result StreamInfo) {
+func (b *Bot) GetStreamInfo() (result StreamInfo) {
   client := &http.Client{Timeout: time.Second * 10,}
   clientid := viper.GetString("twitch.clientId")
-  req, _ := http.NewRequest("GET", "https://api.twitch.tv/helix/streams?user_login="+chnl, nil)
+  req, _ := http.NewRequest("GET", "https://api.twitch.tv/helix/streams?user_login="+b.Channel, nil)
   req.Header.Add("Client-ID", clientid)
   resp, _ := client.Do(req)
   defer resp.Body.Close()

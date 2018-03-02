@@ -2,7 +2,6 @@ package main
 
 import (
   "time"
-  
   "github.com/Mstiekema/Yucibot2/base"
   "github.com/Mstiekema/Yucibot2/web"
 )
@@ -16,7 +15,7 @@ func main() {
   
   t := time.NewTicker(300 * time.Second)
   for {
-    bot.UpdatePoints()
+    bot.UpdateUser()
     <-t.C
   }
 }

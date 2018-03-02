@@ -17,31 +17,41 @@ type AllUsers struct {
   }
 }
 
-func (b *Bot) UpdatePoints() {
+type StreamStatus struct {
+	Data []struct {
+    Title string `json:"title"`
+    ViewerCount int `json:"viewer_count"`
+		Type string `json:"type"`
+	} `json:"data"`
+}
+
+func (b *Bot) UpdateUser() {
   var netClient = &http.Client{Timeout: time.Second * 10,}
   viper.SetConfigFile("./config.toml")
   err := viper.ReadInConfig()
   resp, err := netClient.Get("https://tmi.twitch.tv/group/user/"+viper.GetString("twitch.channel")+"/chatters")
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
+  if err != nil {fmt.Println(err); return}
   defer resp.Body.Close()
   
   body, _ := ioutil.ReadAll(resp.Body)
   app := AllUsers{}
   err = json.Unmarshal(body, &app)
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
+  if err != nil {fmt.Println(err); return}
   
   allChatters := make([]string, len(app.Chatters.Mods) + len(app.Chatters.Viewers))
   copy(allChatters, app.Chatters.Mods)
   copy(allChatters[len(app.Chatters.Mods):], app.Chatters.Viewers)
   
-  for i := 0; i < len(allChatters); i++ {
-    Update("user", "points = points + 5", "name", "'"+allChatters[i]+"'")
+  info := b.GetStreamInfo()
+  if len(info.Data) != 0 {
+    for i := 0; i < len(allChatters); i++ {
+      Update("user", "points = points + 5", "name", "'"+allChatters[i]+"'")
+      Update("user", "timeOnline = timeOnline + 5", "name", "'"+allChatters[i]+"'")
+    }  
+  } else {
+    for i := 0; i < len(allChatters); i++ {
+      Update("user", "timeOffline = timeOffline + 5", "name", "'"+allChatters[i]+"'")
+    }
   }
 }
 
