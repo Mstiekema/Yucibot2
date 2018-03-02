@@ -6,6 +6,7 @@ func (b *Bot) Modules(C string, U User) {
   b.Raffle(C, U)
   b.Roulette(C, U)
   b.Slot(C, U)
+  b.Bet(C, U)
   b.Pickpocket(C, U)
   b.Songrequest(C, U)
   b.CustomCommands(C, U)
