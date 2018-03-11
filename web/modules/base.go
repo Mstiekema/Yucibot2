@@ -2,7 +2,6 @@ package webmods
 
 import (
   "log"
-  "math"
   "strconv"
   "net/http"
   "html/template"
@@ -57,18 +56,16 @@ func Stats(w http.ResponseWriter, r *http.Request){
   t, _ := db.Query(`SELECT COUNT(*) FROM adminlogs where type = "timeout"`); for t.Next() {t.Scan(&timeoutCount)}
   b, _ := db.Query(`SELECT COUNT(*) FROM adminlogs where type = "ban"`); for b.Next() {b.Scan(&banCount)}
   
-  var nlNames, totalLines, pNames, totalPoints []string
-  // onlineHours, onNames, offlineHours, offNames []string
-  var nlName, totalLine, pName, totalPoint string
-  // onlineHour, onName, offlineHour, offName string
-  tl, _ := db.Query("SELECT name, num_lines FROM user ORDER BY num_lines DESC LIMIT 15")
+  var nlNames, totalLines, pNames, totalPoints, onlineHours, onNames, offlineHours, offNames []string
+  var nlName, totalLine, pName, totalPoint, onlineHour, onName, offlineHour, offName string
+  tl, _ := db.Query("SELECT name, num_lines FROM user ORDER BY num_lines DESC LIMIT 25")
   for tl.Next() {tl.Scan(&nlName, &totalLine); totalLines = append(totalLines, totalLine); nlNames = append(nlNames, nlName)}
-  tp, _ := db.Query("SELECT name, points FROM user ORDER BY points DESC LIMIT 15")
+  tp, _ := db.Query("SELECT name, points FROM user ORDER BY points DESC LIMIT 25")
   for tp.Next() {tp.Scan(&pName, &totalPoint); totalPoints = append(totalPoints, totalPoint); pNames = append(pNames, pName)}
-  // ton, _ := db.Query("SELECT name, timeOnline FROM user ORDER BY timeOnline DESC LIMIT 15")
-  // for ton.Next() {ton.Scan(&onName, &onlineHour); onlineHours = append(onlineHours, onlineHour); onNames = append(onNames, onName)}
-  // tof, _ := db.Query("SELECT name, timeOffline FROM user ORDER BY timeOffline DESC LIMIT 15")
-  // for tof.Next() {tof.Scan(&offName, &offlineHour); offlineHours = append(offlineHours, offlineHour); offNames = append(offNames, offName)}
+  ton, _ := db.Query("SELECT name, timeOnline FROM user ORDER BY timeOnline DESC LIMIT 25")
+  for ton.Next() {ton.Scan(&onName, &onlineHour); onlineHours = append(onlineHours, onlineHour); onNames = append(onNames, onName)}
+  tof, _ := db.Query("SELECT name, timeOffline FROM user ORDER BY timeOffline DESC LIMIT 25")
+  for tof.Next() {tof.Scan(&offName, &offlineHour); offlineHours = append(offlineHours, offlineHour); offNames = append(offNames, offName)}
   
   Stats := map[string]interface{}{
     "lines": lines,
@@ -80,10 +77,10 @@ func Stats(w http.ResponseWriter, r *http.Request){
     "nlNames": nlNames,
     "totalPoints": totalPoints,
     "pNames": pNames,
-    // "onlineHours": onlineHours,
-    // "onNames": onNames,
-    // "offlineHours": offlineHours,
-    // "offNames": offNames,
+    "onlineHours": onlineHours,
+    "onNames": onNames,
+    "offlineHours": offlineHours,
+    "offNames": offNames,
   }
   db.Close()
   LoadPage(w, r, "./web/templates/stats.html", Stats)
@@ -95,8 +92,7 @@ func Error(w http.ResponseWriter, r *http.Request) {
 
 func LoadPage(w http.ResponseWriter, r *http.Request, tmpl string, data interface{}) {
   parseWatchTime := func (y string) string {
-    // Fix deze shit, want negative minutes klopt niet helemaal he
-    x, _ := strconv.Atoi(y); days := x / 60 / 24; hours := 24 + int(math.Remainder(float64(x / 60), 24)); minutes := x - days*24*60 - hours*60
+    x, _ := strconv.Atoi(y); days := x / 60 / 24; hours := (x / 60) % 24; minutes := x % 60
     return strconv.Itoa(days)+" days, "+strconv.Itoa(hours)+" hours, "+strconv.Itoa(minutes)+" minutes"
   }
   add := func (x, y int) int { return x + y }
