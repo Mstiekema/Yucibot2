@@ -49,12 +49,12 @@ func (b *Bot) UserInfoComms(C string, U User) {
       if 2 < len(split) {
         giverPoints, _ := strconv.Atoi(Query("SELECT points FROM user WHERE name = '"+U.username+"'"))
         toAddPoints, _ := strconv.Atoi(split[2])
-        if giverPoints >= toAddPoints {
+        if giverPoints >= toAddPoints && toAddPoints > 0 {
           Update("user", "points = points + '"+strings.TrimSpace(split[2])+"'", "name", "'"+strings.ToLower(strings.TrimSpace(split[1]))+"'")
           Update("user", "points = points - '"+strings.TrimSpace(split[2])+"'", "name", "'"+U.username+"'")
           b.SendWhisper("Succesfully gave "+strings.TrimSpace(split[1])+" "+strings.TrimSpace(split[2])+" points.", U.username)
         } else {
-          b.SendWhisper("You can't give another user more points than you have.", U.username)
+          b.SendWhisper("You can't give another user more points than you have or steal by giving negative points.", U.username)
         }
       }
     }
