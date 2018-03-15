@@ -1,6 +1,6 @@
-/* General CSS */
+/* General */
 body {
-  background-color: #e2e2e2;
+  background-color: #f2f2f2;
 }
 
 .main {
@@ -10,7 +10,6 @@ body {
 /* Menu */
 .menu {
   background-color: #6441A4;
-  margin: 10px;
   width: auto;
   height: 44px;
   border-bottom-style: groove;
@@ -34,7 +33,7 @@ body {
   position: absolute;
   font-size: 16px;
   right: 130px;
-  top: 50px;
+  top: 43px;
   width: 300px;
   height: 90px;
   border: groove #3c3e46;
@@ -63,6 +62,7 @@ body {
 .pure-menu li a:hover, .pure-menu li a:focus, #fullProfile div:hover {
   background: #696969;
   color: white;
+  text-decoration: none;
 }
 
 .active {
@@ -77,20 +77,20 @@ body {
 
 #searchBar {
   position: absolute;
-  top: 15px;
+  top: 4px;
   right: 15px;
   width: 200px;
 }
 
 #loginBtn {
   position: absolute;
-  top: 15px;
+  top: 4px;
   right: 220px;
 }
 
 #fullProfile {
   position: absolute;
-  top: 19px;
+  top: 9px;
   right: 220px;
 }
 
@@ -100,12 +100,12 @@ body {
   cursor: pointer;
 }
 
-/* Commands CSS */
+/* Commands */
 .commText {
   padding: 10px;
 }
 
-/* Stats CSS */
+/* Stats */
 .statBlock, .statBlockT {
   display: inline-block;
   width: calc(100% * (1/4) - 10px - 1px);
@@ -141,7 +141,51 @@ body {
   float: right;
 }
 
-/* Songlist CSS */
+/* User profile */
+.chatLine {
+  display: inline-block;
+  font-family: "Georgia", serif;
+  border-bottom: 1px solid #cecece;
+  width: 100%;
+  background-color: #edebeb;
+  margin-bottom: -20px;
+}
+
+.chatLine:nth-last-of-type(2n) {
+  background-color: #ffffff;
+}
+
+#profBlock {
+  background-color: #ffffff;
+  padding: 10px;
+  width: 240px;
+  float: left;
+}
+
+#infoBlock {
+  width: calc(100% - 260px);
+  background-color: #ffffff;
+  padding: 10px;
+  float: right;
+}
+
+#userPf {
+  border-radius: 50%;
+  display: block;
+  margin: 10px;
+  border: 3px solid #6441A4;
+}
+
+#recentChats {
+  background-color: #ffffff;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 10px;
+  width: 100%;
+  float: left;
+}
+
+/* Songlist */
 .songlistDiv {
   position: relative;
   display: block;

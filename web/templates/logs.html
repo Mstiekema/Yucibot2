@@ -1,0 +1,47 @@
+{{define "content"}}
+<div class="main">
+  <div id="recentChats" style="margin-top: 0px;">
+    <h3 style="margin-top: 0px;">Recent chat logs | <small>{{.Values.Info.Date}}</small></h3>
+    <span>
+      <span class="input-group"><input id="searchBarLogs" type="text" class="form-control" placeholder="Chat log" style="width: 200px;">
+      <input type="date" id="myDate" class="form-control" onchange="changeDate()" value="{{.Values.Info.Date}}" style="width: 170px;"></span>
+      <span style="float: right; margin-top: -65px; margin-right: 10px;"><a href="/logs/{{.Values.Info.Username}}/all"><button class="btn btn-danger">All logs</button></a>&nbsp;
+      <a href="/user/{{.Values.Info.Username}}"><button class="btn btn-success">Back to profile</button></a></span>
+    </span>
+    <div id="allLogs" style="margin-top: 20px;">
+      {{ if .Values.Info.ChatLogs }}
+        {{ range $key, $value := .Values.Info.ChatLogs }}
+          <span class="chatLine">{{ index $.Values.Info.ChatTimes $key }}: <span class="logText">{{ $value }}</span></span>
+        {{ end }}
+      {{ else }}
+        <p>Couldn't find any logs for this user :/
+      {{ end }}
+    </div>
+  </div>
+</div>
+<script>
+function changeDate() {
+  var x = document.getElementById("myDate");
+  var date = x.value;
+  var url = location.href.split("/")
+  window.location.href = "/logs/" + url[4] + "/" + date;
+}
+
+$("#searchBarLogs").keyup(function() {
+  var input = document.getElementById("searchBarLogs");
+  var filter = input.value.toLowerCase();
+  var log = document.getElementsByClassName("logText");
+  var logDiv = document.getElementsByClassName("chatLine");
+  $(".chatLine").css("background-color", "#edebeb");
+  for (var x = 0; x < logDiv.length; x++) {
+    if (log[x].innerHTML.toLowerCase().indexOf(filter) > -1) {
+      logDiv[x].style.display = "";
+    } else {
+      logDiv[x].style.display = "none";
+    }
+  }
+  $(".chatLine:visible:even").css("background-color", "#ffffff")
+})
+
+</script>
+{{end}}

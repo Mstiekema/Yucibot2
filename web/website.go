@@ -28,6 +28,8 @@ func MainWeb() {
   r.HandleFunc("/songlist/", webmods.TodaySonglist)
   r.HandleFunc("/songlist/{date}", webmods.Songlist)
   go r.HandleFunc("/user/{username}", webmods.UserPage)
+  go r.HandleFunc("/logs/{username}", webmods.Logs)
+  go r.HandleFunc("/logs/{username}/{date}", webmods.LogsDate)
   r.HandleFunc("/clr", webmods.CLR)
   r.HandleFunc("/auth/{provider}/callback", webmods.Login)
   r.HandleFunc("/auth/{provider}", gothic.BeginAuthHandler)

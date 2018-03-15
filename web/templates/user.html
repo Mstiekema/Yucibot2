@@ -1,11 +1,32 @@
 {{define "content"}}
 <div class="main">
-<h2>User page | {{.Values.Info.Username}}</h2>
 {{ if .Values.Info.Points }}
-<p>
+<div id="profBlock">
+  <h2 style="margin-top: 0px; text-align: center;">{{.Values.Info.Username}}</h2>
+  <img id="userPf" src="{{.Values.Info.Pf}}" width="200" height="200"/>
+</div>
+<div id="infoBlock">
+  <b>Base stats</b><br>
   Points: {{.Values.Info.Points}}<br>
   Lines: {{.Values.Info.Lines}}<br>
-</p>
+  Time online: {{ parseWatchTime .Values.Info.TOn }}<br>
+  Time offline: {{ parseWatchTime .Values.Info.TOff }}<br><br>
+  <b>Profile stats</b><br>
+  Account age: {{ .Values.Info.AccAge  }}<br>
+  Followage: {{ .Values.Info.FAge  }}<br>
+  Following since: {{ .Values.Info.Fsince  }}
+</div>
+<div id="recentChats">
+  <h3 style="margin-top: 0px;">Recent chat logs</h3>
+  <span style="float: right; margin-top: -40px;"><a href="/logs/{{.Values.Info.Username}}"><button class="btn btn-danger" id="moreLogs">Show more logs</button></a></span>
+  {{ if .Values.Info.ChatLogs }}
+    {{ range $key, $value := .Values.Info.ChatLogs }}
+      <span class="chatLine">{{ index $.Values.Info.ChatTimes $key }}: {{ $value }}</span><br>
+    {{ end }}
+  {{ else }}
+    <p>Couldn't find any logs for this user :/
+  {{ end }}
+</div>
 {{ else }}
   <h4>{{.Values.Info.Username}} was not found in the database</h4>
 {{ end }}
