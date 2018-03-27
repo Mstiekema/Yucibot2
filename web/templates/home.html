@@ -1,6 +1,36 @@
 {{define "content"}}
 <div class="main">
-<h2>Welcome to Yucibot 2!</h2>
-<p>This is the test website for Yucibot 2<br>
+  <h2>Welcome to Yucibot 2!</h2>
+  <p>This is {{.Values.Info.streamer}}'s website for Yucibot</p>
+  <div id="streamBlock">
+    {{if .Values.Info.state}}
+      The stream is currently <span style="color: green">LIVE</span>!<br><br>
+      <iframe id="streamView" src='http://player.twitch.tv/?channel={{.Values.Info.streamer}}&autoplay=false' frameborder="0" scrolling="no" allowfullscreen="true"></iframe>
+      <iframe id="streamChat" src="https://www.twitch.tv/{{.Values.Info.streamer}}/chat?popout=" frameborder="0" scrolling="no"></iframe>
+    {{else}}
+      The stream is currently <span style="color: red">OFFLINE</span>!
+    {{end}}
+  </div>
+  <div id="botInfoBlock">
+    <h3 style="text-align: center;">Yucibot features</h3>
+    <div class="featureBlock"><h4>Point system</h4>
+      Viewers can earn points by watching the stream. By default you earn 5 points every 5 minutes. With these points users can buy commands and gamble to earn even more. You can do this by using the roulette & slot command. Another way to earn points is to participate in raffles, which are started with every new subscriber or can be started by mods. By earning points you can also climb the leaderboards and show off your points to others!
+    </div>
+    <div class="featureBlock"><h4>Stat tracking</h4>
+      Everything you do in chat is recorded by the bot. For example, it keeps track of your lines, points and and a whole lot more. One of the special features is that the bot can track the emote usage of the chat. You can view these stats on the <a href="/stats">stats</a> page
+    </div>
+    <div class="featureBlock"><h4>Moderation tools</h4>
+      Twitch chatbots always come with some handy mod tools. The bot currently is able to detect links in chat. You can also filter certain words from the chat. The filter will find any word in a messages and punishes the user by a purge, time-out or ban.
+    </div>
+    <div class="featureBlock"><h4>Songrequest</h4>
+      Users are able to request songs in chat. By default only subs are able to request songs, but this can be changed if the streamer wants to. You can also change the max length of a song or the max amount of songs in the queue. If a song exceeds the max length, you are still able to request is, but it will get skipped at the max timestamp.
+    </div>
+    <div class="featureBlock"><h4>Custom commands</h4>
+      You can add your own commands in the bet. You are able to adjust the cooldown, cost and level of the command, so you can have sub only commands as example. 
+    </div>
+    <div class="featureBlock"><h4>Chat logger</h4>
+      Every message that someones types in the chat will be logged and stored into the database. You can retrieve a users log by going to their profile page on the website. Selecting a certain date will retrieve the logs for that day. You are also able to retrieve the entire user log, but this is not recommended.
+    </div>
+  </div>
 </div>
 {{end}}

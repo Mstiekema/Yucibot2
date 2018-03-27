@@ -2,15 +2,33 @@ package webmods
 
 import (
   "log"
+  "time"
   "strconv"
   "net/http"
+  "io/ioutil"
+  "encoding/json"
   "html/template"
+  "github.com/spf13/viper"
   "github.com/markbates/goth/gothic"
   "github.com/Mstiekema/Yucibot2/base"
 )
 
+type StreamInfo struct {
+	Data []struct {
+		Title string `json:"title"`
+	} `json:"data"`
+}
+
 func Home(w http.ResponseWriter, r *http.Request){
-  LoadPage(w, r, "./web/templates/home.html", nil)
+  client := &http.Client{Timeout: time.Second * 10,}
+  viper.SetConfigFile("./config.toml"); viper.ReadInConfig(); clientid := viper.GetString("twitch.clientId"); chnl := viper.GetString("twitch.channel")
+  req, _ := http.NewRequest("GET", "https://api.twitch.tv/helix/streams?user_login="+chnl, nil)
+  req.Header.Add("Client-ID", clientid); resp, _ := client.Do(req); defer resp.Body.Close()
+  body, _ := ioutil.ReadAll(resp.Body); i := StreamInfo{}; json.Unmarshal(body, &i)
+  var state bool; var title string;
+  if len(i.Data) != 0 {state = true} else {state = false; title = i.Data[0].Title;}
+  Home := map[string]interface{}{"streamer": chnl, "title": title, "state": state}
+  LoadPage(w, r, "./web/templates/home.html", Home)
 }
 
 func Commands(w http.ResponseWriter, r *http.Request){

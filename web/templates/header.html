@@ -28,43 +28,50 @@ $(document).ready(function () {
 <title>Yucibot</title>
 </head>
 <body>
-<div class="pure-menu pure-menu-horizontal menu">
-  <ul class="pure-menu-list">
-    <li class="pure-menu-item"><a class="pure-menu-link" href="/">Home</a></li>
-    <li class="pure-menu-item"><a class="pure-menu-link" href="/commands">Commands</a></li>
-    <li class="pure-menu-item"><a class="pure-menu-link" href="/stats">Stats</a></li>
-    <li class="pure-menu-item"><a class="pure-menu-link" href="/songlist">Songlist</a></li>
-		{{ if $.Values.level }} {{ if ge $.Values.level 200 }}
-		<li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover"><a class="pure-menu-link" href="/admin">Admin</a>
-			<ul class="pure-menu-children">
-				<li class="pure-menu-item"><a class="pure-menu-link" href="/admin/songlist">Songlist</a></li>
-				<li class="pure-menu-item"><a class="pure-menu-link" href="/admin/modules">Modules</a></li>
-				<li class="pure-menu-item"><a class="pure-menu-link" href="/admin/clr">CLR</a></li>
-				<li class="pure-menu-item"><a class="pure-menu-link" href="/admin/commands">Commands</a></li>
-			</ul>
-		</li>
-		{{ end }} {{ end }}
-  </ul>
-  <div id="right">
-		<input id="searchBar" type="text" class="form-control" placeholder="Username">
-		{{ if not $.Values.username }}
-    	<a class="btn btn-default" id="loginBtn" href="/auth/twitch">Login</a>
-		{{ else }}
-			<div id="fullProfile">
-				<div class="pure-menu-link long" id="name">Profile <i class="fa fa-caret-down" aria-hidden="true"></i></div>
-			</div>
-			<div class="profile hidden text-left">
-				<p id="menu">
-					<img src="{{ .Values.profile_pic }}" class="img-circle pf" id="{{ .Values.username }}" width="65" height="65">
-					<u>Hey there {{ .Values.displayName }}!</u><br>
-					<a href='/user/{{ .Values.username }}'>User page</a> <span class="profLeft">Points: {{ .Values.points }}</span><br>
-					<a href='/logout'>Logout</a> <span class="profLeft">Lines: {{ .Values.lines }}</span>
-				</p>
-			</div>
-		{{ end }}
-   </div>
+<div id="wrap">
+	<div class="pure-menu pure-menu-horizontal menu">
+	  <ul class="pure-menu-list">
+	    <li class="pure-menu-item"><a class="pure-menu-link" href="/">Home</a></li>
+	    <li class="pure-menu-item"><a class="pure-menu-link" href="/commands">Commands</a></li>
+	    <li class="pure-menu-item"><a class="pure-menu-link" href="/stats">Stats</a></li>
+			<li class="pure-menu-item"><a class="pure-menu-link" href="/bets">Bets</a></li>
+	    <li class="pure-menu-item"><a class="pure-menu-link" href="/songlist">Songlist</a></li>
+			{{ if $.Values.level }} {{ if ge $.Values.level 200 }}
+			<li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover"><a class="pure-menu-link" href="/admin">Admin</a>
+				<ul class="pure-menu-children">
+					<li class="pure-menu-item"><a class="pure-menu-link" href="/admin/songlist">Songlist</a></li>
+					<li class="pure-menu-item"><a class="pure-menu-link" href="/admin/modules">Modules</a></li>
+					<li class="pure-menu-item"><a class="pure-menu-link" href="/admin/clr">CLR</a></li>
+					<li class="pure-menu-item"><a class="pure-menu-link" href="/admin/commands">Commands</a></li>
+				</ul>
+			</li>
+			{{ end }} {{ end }}
+	  </ul>
+	  <div id="right">
+			<input id="searchBar" type="text" class="form-control" placeholder="Username">
+			{{ if not $.Values.username }}
+	    	<a class="btn btn-default" id="loginBtn" href="/auth/twitch">Login</a>
+			{{ else }}
+				<div id="fullProfile">
+					<div class="pure-menu-link long" id="name">Profile <i class="fa fa-caret-down" aria-hidden="true"></i></div>
+				</div>
+				<div class="profile hidden text-left">
+					<p id="menu">
+						<img src="{{ .Values.profile_pic }}" class="img-circle pf" id="{{ .Values.username }}" width="65" height="65">
+						<u>Hey there {{ .Values.displayName }}!</u><br>
+						<a href='/user/{{ .Values.username }}'>User page</a> <span class="profLeft">Points: {{ .Values.points }}</span><br>
+						<a href='/logout'>Logout</a> <span class="profLeft">Lines: {{ .Values.lines }}</span>
+					</p>
+				</div>
+			{{ end }}
+	   </div>
+	</div>
+	 {{template "content" .}}
+	 <div id="push"></div>
 </div>
- {{template "content" .}}
+<footer class="footer">
+	Copyright © 2018, <a href="https://www.twitter.com/Mstiekema_" target="_blank">Mstiekema</a> - <a href="https://www.github.com/Mstiekema/Yucibot2" target="_blank">Github</a>
+</footer>
 </body>
 </html>
 {{end}}

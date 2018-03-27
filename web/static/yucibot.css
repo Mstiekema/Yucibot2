@@ -1,10 +1,38 @@
 /* General */
-body {
+html, body {
   background-color: #f2f2f2;
+  height: 100%;
+  margin: 0;
+}
+
+footer {
+  position: relative;
+  clear:both;
+  display: block;
+  height: 40px;
+  background-color: #404040;
+  color: #ffffff;
+  padding: 10px;
+  text-align: center;
+}
+
+footer > a, footer > a:hover {
+  color: white;
 }
 
 .main {
   margin: 20px;
+}
+
+#push {
+  height: 40px;
+}
+
+#wrap {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -40px;
 }
 
 /* Menu */
@@ -98,6 +126,34 @@ body {
   user-select: none;
   margin-top: -9px;
   cursor: pointer;
+}
+
+/* Home */
+.featureBlock {
+  display: inline-block;
+  width: calc(100% * (1/3) - 30px);
+  text-align: center;
+  margin: 0 auto;
+  height: 250px;
+  background-color: #d9d9d9;
+  padding: 10px;
+  padding-top: 0px;
+  margin: 15px;
+  margin-top: 0px;
+  float: left;
+  flex-grow: 1;
+  overflow-y: auto;
+  box-shadow: 5px 5px 18px #888888;
+}
+
+#streamView {
+  height: 700px;
+  width: calc(100% - 360px);
+}
+
+  #streamChat {
+  height: 700px;
+  width: 355px;
 }
 
 /* Commands */
