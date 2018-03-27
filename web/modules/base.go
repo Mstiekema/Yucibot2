@@ -26,7 +26,7 @@ func Home(w http.ResponseWriter, r *http.Request){
   req.Header.Add("Client-ID", clientid); resp, _ := client.Do(req); defer resp.Body.Close()
   body, _ := ioutil.ReadAll(resp.Body); i := StreamInfo{}; json.Unmarshal(body, &i)
   var state bool; var title string;
-  if len(i.Data) != 0 {state = true} else {state = false; title = i.Data[0].Title;}
+  if len(i.Data) != 0 {state = true} else {state = false;}
   Home := map[string]interface{}{"streamer": chnl, "title": title, "state": state}
   LoadPage(w, r, "./web/templates/home.html", Home)
 }
