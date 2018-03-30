@@ -104,6 +104,39 @@ func Stats(w http.ResponseWriter, r *http.Request){
   LoadPage(w, r, "./web/templates/stats.html", Stats)
 }
 
+func Bets(w http.ResponseWriter, r *http.Request) {
+  // Display all bets on this page and who lost / won and how many points they betted and such
+  var db = base.Conn()
+  var betIds, betInfos, betOptionss, betWinners, betStates, betsIds, betsUsers, betsPointss, betsToWins, allBets []string; 
+  var betId, betInfo, betOptions, betWinner, betState, betsId, betsUser, betsPoints, betsToWin, bet string; 
+  rs, _ := db.Query(`SELECT betInfo FROM bet`); for rs.Next() {rs.Scan(&bet); allBets = append(allBets, bet);}
+  res, _ := db.Query(`SELECT bet.betId, bet.betInfo, bet.betOptions, bet.betWinner, bet.betState, bets.betId, bets.betUser, bets.betPoints, bets.betToWin FROM bets INNER JOIN bet ON bets.betId = bet.betId`)
+  for res.Next() {
+    res.Scan(&betId, &betInfo, &betOptions, &betWinner, &betState, &betsId, &betsUser, &betsPoints, &betsToWin); 
+    betIds = append(betIds, betId);
+    betInfos = append(betInfos, betInfo);
+    betOptionss = append(betOptionss, betOptions);
+    betWinners = append(betWinners, betWinner);
+    betStates = append(betStates, betState);
+    betsIds = append(betsIds, betsId);
+    betsUsers = append(betsUsers, betsUser);
+    betsPointss = append(betsPointss, betsPoints);
+    betsToWins = append(betsToWins, betsToWin);
+  }
+  bets := make(map[string][]map[string]string)
+  for i := 0; i < len(allBets); i++ {
+    bets[allBets[i]] = nil
+    for j := 0; j < len(betIds); j++ {
+      if allBets[i] == betInfos[j] {
+        entry := map[string]string{"id": betsIds[j], "username": betsUsers[j], "points": betsPointss[j], "win": betsToWins[j]}
+        bets[allBets[i]] = append(bets[allBets[i]], entry)
+      }
+    }
+  }
+  Bets := map[string]interface{}{"testBet": bets, "bets": allBets, "betId": betIds, "betInfo": betInfos, "betOptions": betOptionss, "betWinner": betWinners, "betState": betStates, "betsId": betsIds, "betsUser": betsUsers, "betsPoints": betsPointss, "betsToWin": betsToWins}
+  LoadPage(w, r, "./web/templates/bets.html", Bets)
+}
+
 func Error(w http.ResponseWriter, r *http.Request) {
   LoadPage(w, r, "./web/templates/404.html", nil)
 }

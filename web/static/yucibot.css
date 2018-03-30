@@ -241,6 +241,34 @@ footer > a, footer > a:hover {
   float: left;
 }
 
+/* Bets */
+.betInfo {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.bDrop {
+  display: none;
+  position: flex;
+  background-color: #fafafa;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid black;
+}
+
+.bText {
+  text-align: center;
+  padding: 5px;
+  font-size: 24px;
+  background-color: #ffffff;
+  border-bottom: 1px solid gray;
+  cursor: pointer;
+}
+
+.show {
+  display: block;
+}
+
 /* Songlist */
 .songlistDiv {
   position: relative;

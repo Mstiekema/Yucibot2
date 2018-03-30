@@ -24,6 +24,7 @@ func MainWeb() {
   r.HandleFunc("/", webmods.Home)
   r.HandleFunc("/commands", webmods.Commands)
   go r.HandleFunc("/stats", webmods.Stats)
+  r.HandleFunc("/bets", webmods.Bets)
   r.HandleFunc("/songlist", webmods.TodaySonglist)
   r.HandleFunc("/songlist/", webmods.TodaySonglist)
   r.HandleFunc("/songlist/{date}", webmods.Songlist)

@@ -1,0 +1,26 @@
+{{define "content"}}
+<div class="main">
+  <h2>Bets</h2>
+  <p>
+    {{ range $key, $value := .Values.Info.bets }}
+      <div class="betInfo">
+        <div class="bText" id="{{$key}}">{{ $value }}</div>
+        <div class="bDrop" id="{{$key}}">
+          {{$ind := index $.Values.Info.testBet $value}}
+          {{ range $k, $val := $ind }}
+            <div class="userBet">
+              User: {{$val.username}}<br>
+              Points bet: {{$val.points}}<br>
+              Answer: {{$val.win}}<br><br>
+            </div>
+          {{ else }}
+            No users have participated in this bet.
+          {{ end }}
+        </div>
+      </div>
+    {{ end }}
+  </p>
+</div>
+<script>$(document).ready(function(){$(".bText").click(function() {$(this).siblings().toggleClass("show", 1000, "easeOutSine")});});</script>
+<!-- Fix de smooth shit pls ty -->
+{{end}}
