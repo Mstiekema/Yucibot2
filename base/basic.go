@@ -192,7 +192,7 @@ func (b *Bot) Basic(C string, U User) {
     b.ExecuteCommand(C, "100", "0", "10", U, exec)
   } else if C == "!uptime" {
     exec := func() {
-      resp, _ := http.Get("http://api.yucibot.nl/user/uptime/"+b.Channel)
+      resp, _ := http.Get("http://api.yucibot.com/user/uptime/"+b.Channel)
       defer resp.Body.Close()
       body, _ := ioutil.ReadAll(resp.Body)
       text := string(body[:])
@@ -222,7 +222,7 @@ func (b *Bot) GetStreamInfo() (result StreamInfo) {
 }
 
 func (b *Bot) getFollowAge(user, chnl string) {
-  resp, _ := http.Get("http://api.yucibot.nl/followage/"+user+"/"+chnl)
+  resp, _ := http.Get("http://api.yucibot.com/followage/"+user+"/"+chnl)
   defer resp.Body.Close()
   body, _ := ioutil.ReadAll(resp.Body)
   text := string(body[:])
@@ -236,7 +236,7 @@ func (b *Bot) getFollowAge(user, chnl string) {
 }
 
 func (b *Bot) getFollowSince(user, chnl string) {
-  resp, _ := http.Get("http://api.yucibot.nl/followsince/"+user+"/"+chnl)
+  resp, _ := http.Get("http://api.yucibot.com/followsince/"+user+"/"+chnl)
   defer resp.Body.Close()
   body, _ := ioutil.ReadAll(resp.Body)
   text := string(body[:])

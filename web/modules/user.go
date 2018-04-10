@@ -21,10 +21,10 @@ func UserPage(w http.ResponseWriter, r *http.Request) {
   for usrI.Next() {usrI.Scan(&points, &num_lines, &userId, &timeOffline, &timeOnline)}
   var times, logs []string; var time, log string; lgs, _ := db.Query(`SELECT time, log FROM chatlogs WHERE userId = "`+userId+`" ORDER BY time DESC LIMIT 25`)
   for lgs.Next() {lgs.Scan(&time, &log); times = append(times, time); logs = append(logs, log)}
-  r1, _ := http.Get("http://api.yucibot.nl/user/pf/"+usr); defer r1.Body.Close(); b1, _ := ioutil.ReadAll(r1.Body); pf := string(b1[:])
-  r2, _ := http.Get("http://api.yucibot.nl/raw/followsince/"+usr+"/"+chnl); defer r2.Body.Close(); b2, _ := ioutil.ReadAll(r2.Body); fa := string(b2[:])
-  r3, _ := http.Get("http://api.yucibot.nl/followage/"+usr+"/"+chnl); defer r3.Body.Close(); b3, _ := ioutil.ReadAll(r3.Body); fs := string(b3[:])
-  r4, _ := http.Get("http://api.yucibot.nl/raw/user/age/"+usr); defer r4.Body.Close(); b4, _ := ioutil.ReadAll(r4.Body); aa := string(b4[:])
+  r1, _ := http.Get("http://api.yucibot.com/user/pf/"+usr); defer r1.Body.Close(); b1, _ := ioutil.ReadAll(r1.Body); pf := string(b1[:])
+  r2, _ := http.Get("http://api.yucibot.com/raw/followsince/"+usr+"/"+chnl); defer r2.Body.Close(); b2, _ := ioutil.ReadAll(r2.Body); fa := string(b2[:])
+  r3, _ := http.Get("http://api.yucibot.com/followage/"+usr+"/"+chnl); defer r3.Body.Close(); b3, _ := ioutil.ReadAll(r3.Body); fs := string(b3[:])
+  r4, _ := http.Get("http://api.yucibot.com/raw/user/age/"+usr); defer r4.Body.Close(); b4, _ := ioutil.ReadAll(r4.Body); aa := string(b4[:])
   UserInfo := map[string]interface{}{"Username": usr, "Points": points, "Lines": num_lines, "UserId": userId, "TOn": timeOnline, "TOff": timeOffline, "Pf": pf, "AccAge": aa, "FAge": fa, "Fsince": fs, "ChatTimes": times, "ChatLogs": logs}
   db.Close()
   LoadPage(w, r, "./web/templates/user.html", UserInfo)
