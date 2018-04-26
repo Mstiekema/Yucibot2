@@ -7,17 +7,12 @@ window.onload = function () {
     console.log("xD")
   };
   conn.onmessage = function (e) {
-    console.log(e)
     var data = JSON.parse(e.data)
     if (data.type == "meme") {
-      var src = document.getElementsByTagName('source')[0]
-      var video = document.getElementsByTagName('video')[0]
-      src.setAttribute("src", data.meme)
-      video.load();
-      video.play();
-      video.volume = 0.2;
-      $(video).fadeIn(100);
-      document.getElementsByTagName('video')[0].addEventListener('ended', function() {$("#meme").fadeOut(500);})
+      var memeSrc = document.getElementById('vidSrc');
+      var video = document.getElementById('meme');
+      memeSrc.src = data.meme; video.load(); video.play(); video.volume = 0.2; $(video).fadeIn(100);
+      video.addEventListener('ended', function() {$("#meme").fadeOut(500); memeSrc.src = null;})
     } else if (data.type == "message") {
       console.log("Showed message: " + data.message)
       var id = "id" + (String(Math.floor(Math.random() * 1000000)))
