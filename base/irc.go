@@ -5,6 +5,7 @@ import (
   "bufio"
   "net"
   "strings"
+  "time"
   "github.com/spf13/viper"
 )
 
@@ -33,7 +34,7 @@ func CrtBot() *Bot {
   if err != nil {
     fmt.Println(err)
   }
-  
+
   return &Bot{
     oauth: viper.GetString("twitch.oauth"),
     Channel: viper.GetString("twitch.channel"),
@@ -43,13 +44,13 @@ func CrtBot() *Bot {
 }
 
 func (b *Bot) Connect() {
-  fmt.Println("[DEBUG] Launching bot")  
+  fmt.Println("[DEBUG] Launching bot")
   conn, err := net.Dial("tcp", "irc.chat.twitch.tv:6667")
   if err != nil {
   	fmt.Println(err)
   }
   b.C = conn
-  
+
   fmt.Fprintf(conn, "PASS %s\r\n", b.oauth)
   fmt.Fprintf(conn, "NICK %s\r\n", b.nick)
   fmt.Fprintf(conn, "JOIN #%s\r\n", b.Channel)
@@ -67,7 +68,7 @@ func (b *Bot) Reader(conn net.Conn) {
     if err != nil {
       fmt.Println("err")
       fmt.Println(err)
-      break
+      time.Sleep(time.Second * 5)
     }
     if strings.HasPrefix(line, "PING") {
       fmt.Fprintf(conn, "PONG \r\n")
@@ -83,7 +84,7 @@ func (b *Bot) ParseMsg(m string) {
     msg := strings.TrimSpace(strings.SplitAfterN(mWithUser, ":", 2)[1])
     user := strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "display-name=")[1], ";")[0], ";")
     fmt.Println("[CHAT] " + user + ": " + msg)
-    
+
     User := User{}
     User.username = strings.ToLower(user)
     User.displayName = user
@@ -91,7 +92,7 @@ func (b *Bot) ParseMsg(m string) {
     User.message = msg
     User.mod = strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "mod=")[1], ";")[0], ";")
     User.sub = strings.TrimRight(strings.SplitAfter(strings.SplitAfter(m, "subscriber=")[1], ";")[0], ";")
-    
+
     var comm string
     i := 1
     if  i >= 1 && i < len(strings.SplitAfter(msg, " ")) {
@@ -99,11 +100,11 @@ func (b *Bot) ParseMsg(m string) {
     } else {
       comm = msg
     }
-    
+
     b.UpdateLines(User)
     b.Links(User)
     b.Nuke(comm, User, msg)
-    
+
     if strings.HasPrefix(msg, "!") == false {return}
     b.Modules(comm, User)
   }
