@@ -59,6 +59,11 @@ func (b *Bot) UserInfoComms(C string, U User) {
       }
     }
     b.ExecuteCommand(C, "100", "0", "10", U, exec)
+  } else if C == "!vanish" {
+    exec := func() {
+      b.SendMsg(`.timeout `+U.username+` 1 `+U.displayName+` vanished`)
+    }
+    b.ExecuteCommand(C, "100", "0", "5", U, exec)
   }
 }
 
@@ -80,7 +85,7 @@ func (b *Bot) CustomCommands(C string, U User) {
         }
         b.SendMsg(response)
       }
-      b.ExecuteCommand(C, level, points, cd, U, exec)    
+      b.ExecuteCommand(C, level, points, cd, U, exec)
     }
   }
   db.Close()
@@ -181,7 +186,7 @@ func (b *Bot) Basic(C string, U User) {
     }
     b.ExecuteCommand(C, "100", "0", "10", U, exec)
   } else if C == "!title" {
-    exec := func() {    
+    exec := func() {
       info := b.GetStreamInfo()
       if len(info.Data) != 0 {
         b.SendMsg("Current title: "+info.Data[0].Title)
@@ -205,7 +210,7 @@ func (b *Bot) Basic(C string, U User) {
       }
     }
     b.ExecuteCommand(C, "100", "0", "10", U, exec)
-  } 
+  }
 }
 
 func (b *Bot) GetStreamInfo() (result StreamInfo) {
