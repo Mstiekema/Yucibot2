@@ -20,7 +20,7 @@ func MainWeb() {
   gothic.Store = sessions.NewCookieStore([]byte(viper.GetString("apiKeys.secretCookieKey")))
   r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
   goth.UseProviders(twitch.New(viper.GetString("twitch.clientId"), viper.GetString("twitch.clientSecret"), viper.GetString("twitch.loginCallbackUrl")),)
-  
+
   r.HandleFunc("/", webmods.Home)
   r.HandleFunc("/commands", webmods.Commands)
   go r.HandleFunc("/stats", webmods.Stats)
@@ -36,18 +36,20 @@ func MainWeb() {
   r.HandleFunc("/auth/{provider}", gothic.BeginAuthHandler)
   r.HandleFunc("/logout", webmods.Logout)
   r.NotFoundHandler = http.HandlerFunc(webmods.Error)
-  
+
   r.HandleFunc("/admin/songlist", webmods.AdminSonglist)
-  r.HandleFunc("/admin/modules", webmods.AdminModules)
+  r.HandleFunc("/admin/modules", webmods.AdminModule)
+  r.HandleFunc("/admin/modules/{type}", webmods.AdminModules)
   r.HandleFunc("/admin/clr", webmods.AdminClr)
   r.HandleFunc("/admin/commands", webmods.AdminCommands)
-  
+
   hub := webmods.NewHub()
   go hub.Run()
-  
+
+  r.HandleFunc("/post/modules/", webmods.ModuleAdmin)
   r.HandleFunc("/post/adminClr/", webmods.PostAdminClr)
   r.HandleFunc("/post/getSongs/", webmods.SendSongs)
   r.HandleFunc("/post/getCLR/", func(w http.ResponseWriter, r *http.Request) {webmods.SendCLR(hub, w, r)})
-  
+
   http.ListenAndServe(":9090", r)
 }

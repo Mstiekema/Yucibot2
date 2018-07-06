@@ -1,9 +1,10 @@
 package base
 
 import (
+  "os"
   "fmt"
-  "bufio"
   "net"
+  "bufio"
   "strings"
   "github.com/spf13/viper"
 )
@@ -128,7 +129,7 @@ func (b *Bot) ParseMsg(m string) {
 }
 
 func (b *Bot) SendMsg(msg string) {
-  // Add if for /me msgs from moduleSettings
+  if Query("SELECT state FROM module where moduleName = 'sendMe'") == "1" {msg = "/me "+msg}
   fmt.Fprintf(b.C, "PRIVMSG #%s :"+msg+"\r\n", b.Channel,)
   fmt.Println("[SEND] " + msg)
 }
