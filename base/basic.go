@@ -110,9 +110,9 @@ func (b *Bot) ExecuteCommand(C, level, points, cd string, U User, exec fn) {
       return
     }
   }
-  if points != "0" {
+  Points, _ := strconv.Atoi(points)
+  if Points != 0 {
     uPoints, _ := strconv.Atoi(Query(`SELECT points FROM user WHERE name = "`+U.username+`"`))
-    Points, _ := strconv.Atoi(points)
     if uPoints >= Points {
       Update("user", "points = points - "+points, "name", "'"+U.username+"'")
     } else {
