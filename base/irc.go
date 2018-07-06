@@ -5,7 +5,6 @@ import (
   "bufio"
   "net"
   "strings"
-  "time"
   "github.com/spf13/viper"
 )
 
@@ -68,7 +67,7 @@ func (b *Bot) Reader(conn net.Conn) {
     if err != nil {
       fmt.Println("err")
       fmt.Println(err)
-      time.Sleep(time.Second * 5)
+      os.Exit(0)
     }
     if strings.HasPrefix(line, "PING") {
       fmt.Fprintf(conn, "PONG \r\n")
@@ -129,6 +128,7 @@ func (b *Bot) ParseMsg(m string) {
 }
 
 func (b *Bot) SendMsg(msg string) {
+  // Add if for /me msgs from moduleSettings
   fmt.Fprintf(b.C, "PRIVMSG #%s :"+msg+"\r\n", b.Channel,)
   fmt.Println("[SEND] " + msg)
 }

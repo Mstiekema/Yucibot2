@@ -1,6 +1,7 @@
 package base
 
 import (
+  "os"
   "fmt"
   "time"
   "strconv"
@@ -19,7 +20,10 @@ type StreamInfo struct {
 }
 
 func (b *Bot) UserInfoComms(C string, U User) {
-  if C == "!points" {
+  if C == "!quit" && (U.mod == "1" || U.username == strings.ToLower(b.Channel)) {
+    b.SendMsg("Shutting down Yucibot MrDestructoid")
+    os.Exit(0)
+  } else if C == "!points" {
     exec := func() {
       var res = Query("SELECT points FROM user WHERE name = '"+U.username+"'")
       if res != "" {b.SendWhisper("You currently have " + res + " points", U.username)}
