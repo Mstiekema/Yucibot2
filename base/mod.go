@@ -26,7 +26,7 @@ func (b *Bot) Links(U User) {
     url := xurls.Relaxed().FindString(U.message)
     if url == "d.va" {return}
     if url != "" {
-      b.SendMsg(`.timeout `+U.username+` 30 Only subs are allowed to post links`)
+      b.SendTimeout(U.username, `30`, `Only subs are allowed to post links`)
       b.SendWhisper(`Only subs are allowed to post links`, U.username)
       return
     }

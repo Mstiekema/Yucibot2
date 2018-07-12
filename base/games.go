@@ -99,13 +99,13 @@ func (b *Bot) Roulette(C string, U User) {
 
 func (B *Bot) Slot(C string, U User) {
   if C == "!slot" {
-    exec := func() {  
+    exec := func() {
       emotes := [3][3]string{{"Kappa", "Keepo", "PogChamp"},{"SeemsGood", "DansGame", "4Head"},{"DatSheffy", "LUL", "cmonBruh"}}
       a := int(rand.Float64()*3)
       b := int(rand.Float64()*3)
       c := int(rand.Float64()*3)
       set := int(rand.Float64()*3)
-      
+
       if a == b && b == c {
         Update("user", "points = points + 100", "name", "'"+U.username+"'")
         B.SendMsg(U.displayName+", | "+emotes[set][a]+" | "+emotes[set][b]+" | "+emotes[set][c]+" | -> 3 in a row! You win 100 points PogChamp")
@@ -137,11 +137,11 @@ func (b *Bot) Pickpocket(C string, U User) {
     if  (i >= 1 && i < len(strings.SplitAfter(U.message, " "))) {
       exec := func() {
         target := strings.Trim(strings.ToLower(msgSplit[1]), "@")
-        if Query("SELECT pickP FROM user WHERE name = '"+U.username+"'") == "0" { 
+        if Query("SELECT pickP FROM user WHERE name = '"+U.username+"'") == "0" {
           b.SendWhisper("You have disabled pickpocketing, so you can't steal points. Use !resumepp to start pickpocketing again.", U.username)
           return
         }
-        if Query("SELECT pickP FROM user WHERE name = '"+target+"'") == "0" { 
+        if Query("SELECT pickP FROM user WHERE name = '"+target+"'") == "0" {
           b.SendWhisper("Your target has disabled pickpocketing, so you can't steal points.", U.username)
           return
         }
@@ -204,7 +204,7 @@ func (b *Bot) Nuke(C string, U User, msg string) {
   if nukeState == false && C == "!nuke" { if U.mod == "1" || U.username == strings.ToLower(b.Channel) {
     dur := float64(15)
     nukeState = true
-    
+
     b.SendMsg("A nuke has been been launched, please take cover and don't talk in chat or else you'll be caught in the blast ANELE You have "+strconv.Itoa(int(dur))+" seconds to hide monkaS")
     time.AfterFunc(time.Duration(int(dur*0.33)) * time.Second, func() {b.SendMsg("Hurry up! You still have "+strconv.Itoa(int(dur*0.66))+" seconds left to hide monkaS")})
     time.AfterFunc(time.Duration(int(dur*0.66)) * time.Second, func() {b.SendMsg("Hurry up! You still have "+strconv.Itoa(int(dur*0.33))+" seconds left to hide monkaS")})
@@ -213,7 +213,7 @@ func (b *Bot) Nuke(C string, U User, msg string) {
       if len(toBeNuked) == 0 {b.SendMsg("The nuke has landed! Everyone hid, so no one got hurt! PogChamp"); return}
       b.SendMsg("The nuke has landed! "+strconv.Itoa(len(toBeNuked))+" users didn't hide and will be nuked ANELE")
       for i, _ := range toBeNuked {
-        b.SendMsg(`.timeout `+toBeNuked[i].username+` 5 You didn't hide, so you got nuked`)
+        b.SendTimeout(toBeNuked[i].username, `5`, `User didn't hide, so he got nuked`)
       }
       toBeNuked = toBeNuked[:0]
     })
@@ -233,12 +233,12 @@ func (b *Bot) StartRaffle(dur float64, points int, multi bool) {
   var m string
   rafState = true
   if multi == true { m = "multi" } else { m = "" }
-  
+
   b.SendMsg("Started "+m+"raffle for "+strconv.Itoa(points)+" points! Type !join to join the "+m+"raffle PogChamp")
   time.AfterFunc(time.Duration(int(dur*0.25)) * time.Second, func() {b.SendMsg("Hurry up! You still have "+strconv.Itoa(int(dur*0.75))+" seconds left to join the "+m+"raffle for "+strconv.Itoa(points)+" points!")})
   time.AfterFunc(time.Duration(int(dur*0.5)) * time.Second, func() {b.SendMsg("Hurry up! You still have "+strconv.Itoa(int(dur*0.5))+" seconds left to join the "+m+"raffle for "+strconv.Itoa(points)+" points!")})
   time.AfterFunc(time.Duration(int(dur*0.75)) * time.Second, func() {b.SendMsg("Hurry up! You still have "+strconv.Itoa(int(dur*0.25))+" seconds left to join the "+m+"raffle for "+strconv.Itoa(points)+" points!")})
-  
+
   time.AfterFunc(time.Duration(dur) * time.Second, func() {
     rafState = false
     if multi == true {

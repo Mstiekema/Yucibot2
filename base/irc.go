@@ -135,6 +135,11 @@ func (b *Bot) SendMsg(msg string) {
 }
 
 func (b *Bot) SendWhisper(msg, user string) {
-  fmt.Fprintf(b.C, "PRIVMSG #%s : .w "+user+" "+msg+"\r\n", b.Channel,)
+  fmt.Fprintf(b.C, "PRIVMSG #%s :/w "+user+" "+msg+"\r\n", b.Channel,)
   fmt.Println("[WHISPER] "+user+": "+msg)
+}
+
+func (b *Bot) SendTimeout(user, time, msg string) {
+  fmt.Fprintf(b.C, "PRIVMSG #%s :/timeout "+user+" "+time+" "+msg+"\r\n", b.Channel,)
+  fmt.Println("[TIMEOUT] " + msg)
 }

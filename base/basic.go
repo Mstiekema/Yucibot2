@@ -65,7 +65,7 @@ func (b *Bot) UserInfoComms(C string, U User) {
     b.ExecuteCommand(C, "100", "0", "10", U, exec)
   } else if C == "!vanish" {
     exec := func() {
-      b.SendMsg(`.timeout `+U.username+` 1 `+U.displayName+` vanished`)
+      b.SendTimeout(U.username, `1`, U.displayName+` vanished`)
     }
     b.ExecuteCommand(C, "100", "0", "5", U, exec)
   }
