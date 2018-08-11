@@ -230,6 +230,7 @@ func (b *Bot) Nuke(C string, U User, msg string) {
 }
 
 func (b *Bot) StartRaffle(dur float64, points int, multi bool) {
+  if rafState == true {return}
   var m string
   rafState = true
   if multi == true { m = "multi" } else { m = "" }
