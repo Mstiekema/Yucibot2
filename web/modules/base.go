@@ -38,7 +38,7 @@ func Commands(w http.ResponseWriter, r *http.Request){
     panic(err.Error())
   }
   defer res.Close()
-  
+
   var levels, commNames, commDescs, commUses, responses, pointss, cds []string
   for res.Next() {
     var level, commName, commDesc, commUse, response, points, cd string
@@ -67,13 +67,13 @@ func Commands(w http.ResponseWriter, r *http.Request){
 func Stats(w http.ResponseWriter, r *http.Request){
   db := base.Conn()
   var lines, userCount, songRequests, timeoutCount, banCount string
-  
+
   l, _ := db.Query(`SELECT COUNT(*) FROM chatlogs`); for l.Next() {l.Scan(&lines)}
   u, _ := db.Query(`SELECT COUNT(*) FROM user`); for u.Next() {u.Scan(&userCount)}
   s, _ := db.Query(`SELECT COUNT(*) FROM songrequest`); for s.Next() {s.Scan(&songRequests)}
   t, _ := db.Query(`SELECT COUNT(*) FROM adminlogs where type = "timeout"`); for t.Next() {t.Scan(&timeoutCount)}
   b, _ := db.Query(`SELECT COUNT(*) FROM adminlogs where type = "ban"`); for b.Next() {b.Scan(&banCount)}
-  
+
   var nlNames, totalLines, pNames, totalPoints, onlineHours, onNames, offlineHours, offNames []string
   var nlName, totalLine, pName, totalPoint, onlineHour, onName, offlineHour, offName string
   tl, _ := db.Query("SELECT name, num_lines FROM user ORDER BY num_lines DESC LIMIT 25")
@@ -84,7 +84,7 @@ func Stats(w http.ResponseWriter, r *http.Request){
   for ton.Next() {ton.Scan(&onName, &onlineHour); onlineHours = append(onlineHours, onlineHour); onNames = append(onNames, onName)}
   tof, _ := db.Query("SELECT name, timeOffline FROM user ORDER BY timeOffline DESC LIMIT 25")
   for tof.Next() {tof.Scan(&offName, &offlineHour); offlineHours = append(offlineHours, offlineHour); offNames = append(offNames, offName)}
-  
+
   Stats := map[string]interface{}{
     "lines": lines,
     "userCount": userCount,
@@ -107,12 +107,12 @@ func Stats(w http.ResponseWriter, r *http.Request){
 func Bets(w http.ResponseWriter, r *http.Request) {
   // Display all bets on this page and who lost / won and how many points they betted and such
   var db = base.Conn()
-  var betIds, betInfos, betOptionss, betWinners, betStates, betsIds, betsUsers, betsPointss, betsToWins, allBets []string; 
-  var betId, betInfo, betOptions, betWinner, betState, betsId, betsUser, betsPoints, betsToWin, bet string; 
+  var betIds, betInfos, betOptionss, betWinners, betStates, betsIds, betsUsers, betsPointss, betsToWins, allBets []string;
+  var betId, betInfo, betOptions, betWinner, betState, betsId, betsUser, betsPoints, betsToWin, bet string;
   rs, _ := db.Query(`SELECT betInfo FROM bet`); for rs.Next() {rs.Scan(&bet); allBets = append(allBets, bet);}
   res, _ := db.Query(`SELECT bet.betId, bet.betInfo, bet.betOptions, bet.betWinner, bet.betState, bets.betId, bets.betUser, bets.betPoints, bets.betToWin FROM bets INNER JOIN bet ON bets.betId = bet.betId`)
   for res.Next() {
-    res.Scan(&betId, &betInfo, &betOptions, &betWinner, &betState, &betsId, &betsUser, &betsPoints, &betsToWin); 
+    res.Scan(&betId, &betInfo, &betOptions, &betWinner, &betState, &betsId, &betsUser, &betsPoints, &betsToWin);
     betIds = append(betIds, betId);
     betInfos = append(betInfos, betInfo);
     betOptionss = append(betOptionss, betOptions);
@@ -152,6 +152,8 @@ func LoadPage(w http.ResponseWriter, r *http.Request, tmpl string, data interfac
   if data != nil {
     session.Values["Info"] = data
   }
+  session.Values["points"] = base.Query("SELECT points FROM user WHERE name = '"+session.Values["username"].(string)+"'")
+  session.Values["lines"] = base.Query("SELECT num_lines FROM user WHERE name = '"+session.Values["username"].(string)+"'")
   t, err := template.New("").Funcs(funcs).ParseFiles(tmpl, "./web/templates/header.html")
   if err != nil {
     log.Print("template parsing error: ", err)
