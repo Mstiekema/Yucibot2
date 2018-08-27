@@ -151,9 +151,9 @@ func LoadPage(w http.ResponseWriter, r *http.Request, tmpl string, data interfac
   session, _ := gothic.Store.Get(r, "loginSession")
   if data != nil {
     session.Values["Info"] = data
+    session.Values["points"] = base.Query("SELECT points FROM user WHERE name = '"+session.Values["username"].(string)+"'")
+    session.Values["lines"] = base.Query("SELECT num_lines FROM user WHERE name = '"+session.Values["username"].(string)+"'")
   }
-  session.Values["points"] = base.Query("SELECT points FROM user WHERE name = '"+session.Values["username"].(string)+"'")
-  session.Values["lines"] = base.Query("SELECT num_lines FROM user WHERE name = '"+session.Values["username"].(string)+"'")
   t, err := template.New("").Funcs(funcs).ParseFiles(tmpl, "./web/templates/header.html")
   if err != nil {
     log.Print("template parsing error: ", err)
